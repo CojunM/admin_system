@@ -1,0 +1,109 @@
+/* 树形组件容器 */
+.tree-container {
+    width: 100%;
+    padding: 10px;
+}
+
+/* 树形节点 */
+.tree-node {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.tree-node:hover {
+    color: #409eff;
+}
+
+/* 节点缩进 & 连接线 */
+.tree-indent {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    position: relative;
+}
+
+.tree-line {
+    position: absolute;
+    background-color: #eee;
+}
+
+#app.dark .tree-line {
+    background-color: #444;
+}
+
+.tree-line-v {
+    width: 1px;
+    height: 100%;
+    left: 9px;
+    top: 0;
+}
+
+.tree-line-h {
+    width: 9px;
+    height: 1px;
+    left: 0;
+    top: 9px;
+}
+
+/* 节点展开/折叠按钮 */
+.tree-toggle {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.tree-toggle.expanded {
+    transform: rotate(90deg);
+}
+
+/* 节点图标 & 内容 */
+.tree-icon {
+    margin: 0 8px;
+    font-size: 14px;
+}
+
+.tree-label {
+    flex: 1;
+}
+
+/* 子节点容器 */
+.tree-children {
+    margin-left: 18px;
+    display: none;
+}
+
+.tree-children.expanded {
+    display: block;
+}
+
+/* 复选框样式 */
+.tree-checkbox {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    display: inline-block;
+    position: relative;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+#app.dark .tree-checkbox {
+    border-color: #444;
+}
+
+.tree-checkbox.checked::after {
+    content: "✓";
+    position: absolute;
+    top: -2px;
+    left: 1px;
+    font-size: 12px;
+    color: #409eff;
+}

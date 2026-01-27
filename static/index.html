@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统</title>
+    <!-- 外部资源 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/3.3.2/tailwind.min.css">
+    <!-- 本地样式 -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <link rel="stylesheet" href="/static/css/component/table.css">
+    <link rel="stylesheet" href="/static/css/component/tree.css">
+    <link rel="stylesheet" href="/static/css/component/modal.css">
+    <link rel="stylesheet" href="/static/css/component/pagination.css">
+</head>
+
+<body>
+    <div id="app" class="light">
+        <!-- 登录页（默认显示） -->
+        <div id="login-page" class="flex align-center justify-center h-full">
+            <div class="login-container w-96 bg-white rounded-lg shadow-lg p-8">
+                <div class="login-title text-center text-2xl font-bold mb-8 text-primary">后台管理系统</div>
+                <form id="login-form" class="space-y-4">
+                    <div class="form-item">
+                        <label class="form-label">用户名</label>
+                        <input type="text" name="username" class="form-input" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">密码</label>
+                        <input type="password" name="password" class="form-input" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">登 录</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 管理系统布局（登录后显示） -->
+        <div id="admin-layout" class="hidden h-full">
+            <!-- 顶部导航 -->
+            <header class="app-header">
+                <div class="logo text-xl font-bold text-primary">
+                    <i class="fa-solid fa-gears mr-2"></i>后台管理系统
+                </div>
+                <div class="header-right flex align-center gap-20">
+                    <div class="notify flex align-center relative" style="cursor: pointer;">
+                        <i class="fa-solid fa-bell text-xl notify-icon"></i>
+                        <span
+                            class="notify-count absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex align-center justify-center hidden">0</span>
+                    </div>
+                    <div class="theme-switch mr-4"></div>
+                    <div class="user-info flex align-center gap-4"></div>
+                    <button id="logout-btn" class="btn btn-default">退出登录</button>
+                </div>
+            </header>
+
+            <!-- 主内容区 -->
+            <main class="app-main">
+                <!-- 侧边栏 -->
+                <aside class="sidebar">
+                    <ul class="menu-list p-4"></ul>
+                </aside>
+                <!-- 内容区域 -->
+                <div class="main-content"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 前端脚本（按依赖顺序引入） -->
+    <script src="/static/js/store.js"></script>
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/csrf.js"></script>
+    <script src="/static/js/api.js"></script>
+    <!-- 组件脚本 -->
+    <script src="/static/js/component/Loading.js"></script>
+    <script src="/static/js/component/Notify.js"></script>
+    <script src="/static/js/component/Modal.js"></script>
+    <script src="/static/js/component/Pagination.js"></script>
+    <script src="/static/js/component/Tree.js"></script>
+    <script src="/static/js/component/TableVScroll.js"></script>
+    <!-- 入口脚本 -->
+    <script src="/static/js/main.js"></script>
+
+    <!-- 登录逻辑 -->
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const username = this.username.value.trim();
+            const password = this.password.value.trim();
+
+            if (!username || !password) {
+                notify.warning('请输入用户名和密码');
+                return;
+            }
+
+            try {
+                loading.show();
+                const res = await api.post('/api/user/info/login', { username, password });
+                if (res.code === 200) {
+                    // 保存Token
+                    store.set('token', res.data.token);
+                    // 切换到管理布局
+                    document.getElementById('login-page').classList.add('hidden');
+                    document.getElementById('admin-layout').classList.remove('hidden');
+                    // 初始化系统
+                    initApp();
+                    notify.success('登录成功');
+                }
+            } catch (err) {
+                console.error('登录失败', err);
+            } finally {
+                loading.hide();
+            }
+        });
+    </script>
+</body>
+
+</html>

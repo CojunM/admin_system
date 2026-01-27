@@ -1,0 +1,20 @@
+/* 分页样式增强（基础样式已在base.css中） */
+.pagination-jump {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-jump input {
+    width: 40px;
+    height: 32px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    text-align: center;
+}
+
+#app.dark .pagination-jump input {
+    border-color: #444;
+    background-color: #373a40;
+    color: #e5e7eb;
+}

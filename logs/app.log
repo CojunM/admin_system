@@ -1,0 +1,234 @@
+ 2026-01-25 23:12:37 - admin_system - ERROR - [HotReload] Reload module apps.dashboard.views failed: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\dashboard\views.py", line 11, in <module>
+    from core import get
+ImportError: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Import module apps.notify.models success
+2026-01-25 23:12:37 - admin_system - ERROR - [HotReload] Reload module apps.notify.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\notify\views.py", line 11, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Import module apps.permission.models success
+2026-01-25 23:12:37 - admin_system - ERROR - [HotReload] Reload module apps.permission.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\permission\views.py", line 3, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.role.models success
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Import module apps.role.views success
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.user.models success
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Import module apps.user.views success
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Start monitor, interval: 2s, dirs: ['D:\\mcj\\python\\admin_system\\apps']
+2026-01-25 23:12:37 - admin_system - INFO - [Server] HTTP server running on http://127.0.0.1:8000
+2026-01-25 23:12:37 - admin_system - ERROR - [HotReload] Reload module apps.dashboard.views failed: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\dashboard\views.py", line 11, in <module>
+    from core import get
+ImportError: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.notify.models success
+2026-01-25 23:12:37 - admin_system - ERROR - [HotReload] Reload module apps.notify.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\notify\views.py", line 11, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.permission.models success
+2026-01-25 23:12:37 - admin_system - ERROR - [HotReload] Reload module apps.permission.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\permission\views.py", line 3, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.role.models success
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route POST /api/role/add already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route GET /api/role/list already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route PUT /api/role/edit/<role_id> already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route DELETE /api/role/delete/<role_id> already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route POST /api/role/assign-perm/<role_id> already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route GET /api/role/perm-list/<role_id> already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.role.views success
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.user.models success
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route POST /api/user/login already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route GET /api/user/info already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route POST /api/user/add already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route GET /api/user/list already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route PUT /api/user/edit/<user_id> already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route DELETE /api/user/delete/<user_id> already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - WARNING - [Router] Route POST /api/user/change-pwd already exists, overwrite it
+2026-01-25 23:12:37 - admin_system - INFO - [HotReload] Reload module apps.user.views success
+2026-01-25 23:12:44 - admin_system - ERROR - [HotReload] Reload module apps.dashboard.views failed: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\dashboard\views.py", line 11, in <module>
+    from core import get
+ImportError: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Import module apps.notify.models success
+2026-01-25 23:12:44 - admin_system - ERROR - [HotReload] Reload module apps.notify.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\notify\views.py", line 11, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Import module apps.permission.models success
+2026-01-25 23:12:44 - admin_system - ERROR - [HotReload] Reload module apps.permission.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\permission\views.py", line 3, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.role.models success
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Import module apps.role.views success
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.user.models success
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Import module apps.user.views success
+2026-01-25 23:12:44 - admin_system - INFO - [Server] HTTP server running on http://127.0.0.1:8000
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Start monitor, interval: 2s, dirs: ['D:\\mcj\\python\\admin_system\\apps']
+2026-01-25 23:12:44 - admin_system - ERROR - [HotReload] Reload module apps.dashboard.views failed: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\dashboard\views.py", line 11, in <module>
+    from core import get
+ImportError: cannot import name 'get' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.notify.models success
+2026-01-25 23:12:44 - admin_system - ERROR - [HotReload] Reload module apps.notify.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\notify\views.py", line 11, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.permission.models success
+2026-01-25 23:12:44 - admin_system - ERROR - [HotReload] Reload module apps.permission.views failed: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+Traceback (most recent call last):
+  File "D:\mcj\python\admin_system\core\hot_reload.py", line 70, in _reload_module
+    module = importlib.import_module(module_name)
+  File "c:\Users\Cojun\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "D:\mcj\python\admin_system\apps\permission\views.py", line 3, in <module>
+    from core import post, get, put, delete
+ImportError: cannot import name 'post' from 'core' (D:\mcj\python\admin_system\core\__init__.py)
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.role.models success
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route POST /api/role/add already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route GET /api/role/list already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route PUT /api/role/edit/<role_id> already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route DELETE /api/role/delete/<role_id> already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route POST /api/role/assign-perm/<role_id> already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route GET /api/role/perm-list/<role_id> already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.role.views success
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.user.models success
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route POST /api/user/login already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route GET /api/user/info already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route POST /api/user/add already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route GET /api/user/list already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route PUT /api/user/edit/<user_id> already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route DELETE /api/user/delete/<user_id> already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - WARNING - [Router] Route POST /api/user/change-pwd already exists, overwrite it
+2026-01-25 23:12:44 - admin_system - INFO - [HotReload] Reload module apps.user.views success
