@@ -1,83 +1,83 @@
-// 后端API请求封装，统一处理请求头、响应、错误
+// api.js 完整修复版（原生JS，无框架依赖）
 const api = {
-    // 基础配置
-    baseUrl: '',
-    timeout: 10000,
+    // 基础请求地址，按你的实际后端地址调整
+    baseUrl: 'http://127.0.0.1:8080', // 如：'http://localhost:8000'
 
-    // 请求头配置
+    // 修复后的请求头构建函数（核心：避免split()报错）
     getHeaders() {
         const headers = {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.cookie.split('; ').find(row => row.startsWith('X-CSRF-Token=')).split('=')[1] || ''
+            "Content-Type": "application/json;charset=utf-8"
         };
-        // 添加Token
-        const token = store.get('token');
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        // 从localStorage获取Token，未登录时为null
+        const token = localStorage.getItem('token');
+        // 仅当Token存在时，设置Authorization请求头
+        if (token && token.trim() !== '') {
+            // 拼接Bearer前缀（后端鉴权中间件期望的格式）
+            headers["Authorization"] = `Bearer ${token.trim()}`;
         }
         return headers;
     },
 
-    // 统一请求处理
-    async request(method, url, data = {}) {
-        try {
-            const options = {
-                method: method.toUpperCase(),
-                headers: this.getHeaders(),
-                timeout: this.timeout
+    // 基础请求方法
+    request(method, url, data = {}) {
+        const fullUrl = this.baseUrl ? `${this.baseUrl}${url}` : url;
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open(method, fullUrl, true);
+            // 获取修复后的请求头
+            const headers = this.getHeaders();
+            // 设置请求头
+            for (const key in headers) {
+                xhr.setRequestHeader(key, headers[key]);
+            }
+            // 响应处理
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        const res = JSON.parse(xhr.responseText);
+                        resolve(res);
+                    } catch (e) {
+                        reject({ msg: '响应数据格式错误' });
+                    }
+                } else {
+                    try {
+                        const err = JSON.parse(xhr.responseText);
+                        reject(err);
+                    } catch (e) {
+                        reject({ msg: `请求失败，状态码：${xhr.status}` });
+                    }
+                }
             };
-
-            // GET请求拼接参数，其他请求设置body
-            if (method.toUpperCase() === 'GET') {
-                const params = new URLSearchParams(data);
-                url += params.toString() ? `?${params.toString()}` : '';
+            // 网络错误处理
+            xhr.onerror = function () {
+                reject({ msg: '网络异常，请检查网络连接' });
+            };
+            // 发送请求（POST/PUT传JSON字符串，GET不传体）
+            if (method === 'GET' || method === 'DELETE') {
+                xhr.send();
             } else {
-                options.body = JSON.stringify(data);
+                xhr.send(JSON.stringify(data));
             }
-
-            // 发送请求
-            const response = await fetch(this.baseUrl + url, options);
-            const res = await response.json();
-
-            // 统一响应处理
-            if (res.code === 200) {
-                return res;
-            } else if (res.code === 401) {
-                // 未登录/Token过期，跳转到登录页
-                store.remove('token');
-                window.location.href = '/';
-                notify.error(res.msg || '登录状态过期，请重新登录');
-                throw new Error(res.msg);
-            } else {
-                notify.error(res.msg || '请求失败');
-                throw new Error(res.msg);
-            }
-        } catch (err) {
-            if (err.message !== 'Failed to fetch') {
-                notify.error(err.message || '网络异常，请稍后重试');
-            }
-            throw err;
-        }
+        });
     },
 
-    // 快捷请求方法
-    get(url, params = {}) {
-        return this.request('GET', url, params);
+    // GET请求封装
+    get(url) {
+        return this.request('GET', url);
     },
 
-    post(url, data = {}) {
+    // POST请求封装（登录调用的方法）
+    post(url, data) {
         return this.request('POST', url, data);
     },
 
-    put(url, data = {}) {
+    // PUT请求封装
+    put(url, data) {
         return this.request('PUT', url, data);
     },
 
-    delete(url, data = {}) {
-        return this.request('DELETE', url, data);
-    },
-
-    patch(url, data = {}) {
-        return this.request('PATCH', url, data);
+    // DELETE请求封装
+    delete(url) {
+        return this.request('DELETE', url);
     }
 };

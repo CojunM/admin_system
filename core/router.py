@@ -76,6 +76,7 @@ class Router:
                     params[param_name] = match.group(idx + 1)
                 logger.debug(f"[Router] Match route {method} {route_path}, params: {params}, query: {query}")
                 return route_info["handler"], params, query
+        logger.info(f"[Router] No match route {method} {route_path}")
         return None, {}, query
 
 # 全局路由实例

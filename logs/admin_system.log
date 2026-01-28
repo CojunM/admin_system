@@ -2676,3 +2676,43 @@ AttributeError: 'socket' object has no attribute 'SOL_SOCKET'
 2026-01-27 14:27:01 - admin-system - INFO - server.py:293 - [Server] HTTPServer running on http://127.0.0.1:8080
 2026-01-27 14:27:01 - admin-system - INFO - server.py:294 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
 2026-01-27 14:27:01 - admin-system - INFO - server.py:295 - [Server] Press CTRL+C to stop server
+2026-01-27 22:35:27 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 22:35:27 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 22:35:27 - admin-system - INFO - server.py:293 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 22:35:27 - admin-system - INFO - server.py:294 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 22:35:27 - admin-system - INFO - server.py:295 - [Server] Press CTRL+C to stop server
+2026-01-27 22:55:26 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 22:55:26 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 22:55:26 - admin-system - INFO - server.py:293 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 22:55:26 - admin-system - INFO - server.py:294 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 22:55:26 - admin-system - INFO - server.py:295 - [Server] Press CTRL+C to stop server
+2026-01-27 23:03:02 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 23:03:02 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 23:03:02 - admin-system - INFO - server.py:293 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 23:03:02 - admin-system - INFO - server.py:294 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 23:03:02 - admin-system - INFO - server.py:295 - [Server] Press CTRL+C to stop server
+2026-01-27 23:11:05 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 23:11:05 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 23:11:05 - admin-system - INFO - server.py:293 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 23:11:05 - admin-system - INFO - server.py:294 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 23:11:05 - admin-system - INFO - server.py:295 - [Server] Press CTRL+C to stop server
+2026-01-27 23:12:54 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 23:12:54 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 23:12:54 - admin-system - INFO - server.py:293 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 23:12:54 - admin-system - INFO - server.py:294 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 23:12:54 - admin-system - INFO - server.py:295 - [Server] Press CTRL+C to stop server
+2026-01-27 23:17:59 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 23:17:59 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 23:17:59 - admin-system - INFO - server.py:302 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 23:17:59 - admin-system - INFO - server.py:303 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 23:17:59 - admin-system - INFO - server.py:304 - [Server] Press CTRL+C to stop server
+2026-01-27 23:29:24 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 23:29:24 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 23:29:24 - admin-system - INFO - server.py:294 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 23:29:24 - admin-system - INFO - server.py:295 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 23:29:24 - admin-system - INFO - server.py:296 - [Server] Press CTRL+C to stop server
+2026-01-27 23:37:37 - admin-system - INFO - run.py:18 - [System] Starting server on 127.0.0.1:8080, DEBUG=True
+2026-01-27 23:37:37 - admin-system - INFO - run.py:19 - [System] Hot reload: True
+2026-01-27 23:37:37 - admin-system - INFO - server.py:294 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-27 23:37:37 - admin-system - INFO - server.py:295 - [Server] Debug mode: True, Static dir: D:\mcj\python\admin_system\static
+2026-01-27 23:37:37 - admin-system - INFO - server.py:296 - [Server] Press CTRL+C to stop server

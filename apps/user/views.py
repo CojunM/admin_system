@@ -1,50 +1,51 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
-# import jwt
+from utils.jwt_tool import jwt_encode, jwt_decode
 from core.router import post, get, put, delete
-from config.settings import SECRET_KEY
+from config.settings import SECRET_KEY  # 保留，作为JWT签名密钥
 from utils.crypto import encrypt_pwd, verify_pwd
 from utils.logger import logger
 from apps.user.models import User
 from apps.role.models import Role
 
-# JWT过期时间（24小时）
+# JWT过期时间（24小时），保留原有配置
 JWT_EXPIRE = 86400
 
 @post("/api/user/login")
 def user_login(request):
-    """用户登录接口"""
+    """用户登录接口：仅替换jwt.encode为自定义jwt_encode，其余不变"""
     username = request.body.get("username")
     password = request.body.get("password")
     if not username or not password:
         return 400, {"msg": "用户名和密码不能为空"}
     
-    # 查询用户
+    # 查询用户（原有逻辑完全不变）
     user = User.get(username=username)
     if not user:
         return 401, {"msg": "用户名或密码错误"}
     if user.status == 0:
         return 401, {"msg": "用户已被禁用"}
     
-    # 验证密码
+    # 验证密码（原有逻辑完全不变）
     if not verify_pwd(password, user.password):
         logger.warning(f"[User] Login failed, wrong password for {username}")
         return 401, {"msg": "用户名或密码错误"}
     
-    # 更新最后登录时间
+    # 更新最后登录时间（原有逻辑完全不变）
     user.last_login_time = time.strftime("%Y-%m-%d %H:%M:%S")
     user.save()
     
-    # 生成JWT Token
+    # 生成JWT Token：替换原有jwt.encode为自定义jwt_encode，参数完全一致
     payload = {
         "user_id": user.id,
         "username": user.username,
         "exp": time.time() + JWT_EXPIRE
     }
-    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    # 核心替换：jwt.encode → jwt_encode（自定义方法）
+    token = jwt_encode(payload, SECRET_KEY, algorithm="HS256")
     
-    # 返回用户信息（脱敏）
+    # 返回用户信息（脱敏，原有逻辑完全不变）
     user_info = user.to_dict(desensitize_fields=["phone", "email"])
     del user_info["password"]
     user_info["role"] = Role.get(id=user.role_id).name
@@ -55,9 +56,10 @@ def user_login(request):
         "user": user_info
     }
 
+# 以下所有接口：完全保留原有逻辑，无需任何修改 ==============================
 @get("/api/user/info")
 def user_info(request):
-    """获取当前用户信息"""
+    """获取当前用户信息：原有逻辑完全不变"""
     user_id = request.user.get("id")
     user = User.get(id=user_id)
     role = Role.get(id=user.role_id)
@@ -70,20 +72,17 @@ def user_info(request):
 
 @post("/api/user/add")
 def user_add(request):
-    """添加用户"""
+    """添加用户：原有逻辑完全不变"""
     required = ["username", "password", "nickname", "role_id"]
     for field in required:
         if not request.body.get(field):
             return 400, {"msg": f"{field}不能为空"}
     
-    # 检查用户是否存在
     if User.get(username=request.body.get("username")):
         return 400, {"msg": "用户名已存在"}
     
-    # 加密密码
     pwd = encrypt_pwd(request.body.get("password"))
     
-    # 创建用户
     user = User(
         username=request.body.get("username"),
         password=pwd,
@@ -99,14 +98,12 @@ def user_add(request):
 
 @get("/api/user/list")
 def user_list(request):
-    """用户列表（分页）"""
+    """用户列表（分页）：原有逻辑完全不变"""
     page = int(request.query.get("page", 1))
     page_size = int(request.query.get("page_size", 10))
     keyword = request.query.get("keyword", "")
     
-    # 条件查询
     if keyword:
-        # 简化版：实际需用模糊查询，ORM扩展like即可
         users = User.filter(username__like=f"%{keyword}%")
         total = len(users)
         paginated = {
@@ -120,19 +117,17 @@ def user_list(request):
         paginated = User.paginate(page=page, page_size=page_size)
         paginated["list"] = [u.to_dict(desensitize_fields=["phone", "email"]) for u in paginated["list"]]
     
-    # 补充角色名称
     for user in paginated["list"]:
         user["role_name"] = Role.get(id=user["role_id"]).name
     return paginated
 
 @put("/api/user/edit/<user_id>")
 def user_edit(request, user_id):
-    """编辑用户"""
+    """编辑用户：原有逻辑完全不变"""
     user = User.get(id=user_id)
     if not user:
         return 404, {"msg": "用户不存在"}
     
-    # 更新字段
     if "nickname" in request.body:
         user.nickname = request.body.get("nickname")
     if "email" in request.body:
@@ -145,7 +140,6 @@ def user_edit(request, user_id):
         user.role_id = request.body.get("role_id")
     if "status" in request.body:
         user.status = request.body.get("status")
-    # 密码更新
     if "password" in request.body and request.body.get("password"):
         user.password = encrypt_pwd(request.body.get("password"))
     
@@ -155,11 +149,10 @@ def user_edit(request, user_id):
 
 @delete("/api/user/delete/<user_id>")
 def user_delete(request, user_id):
-    """删除用户"""
+    """删除用户：原有逻辑完全不变"""
     user = User.get(id=user_id)
     if not user:
         return 404, {"msg": "用户不存在"}
-    # 禁止删除超级管理员
     role = Role.get(id=user.role_id)
     if role.is_admin == 1:
         return 403, {"msg": "禁止删除超级管理员"}
@@ -169,7 +162,7 @@ def user_delete(request, user_id):
 
 @post("/api/user/change-pwd")
 def change_pwd(request):
-    """修改密码"""
+    """修改密码：原有逻辑完全不变"""
     old_pwd = request.body.get("old_pwd")
     new_pwd = request.body.get("new_pwd")
     if not old_pwd or not new_pwd:
@@ -183,3 +176,4 @@ def change_pwd(request):
     user.save()
     logger.info(f"[User] Change password for {user.username}")
     return {"msg": "密码修改成功"}
+# ==========================================================================

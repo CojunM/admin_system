@@ -88,7 +88,7 @@ class Request:
         else:
             self.body = {}
 
-# ===================== 原有Response类（完全不变） =====================
+# ===================== 原有Response类（完全不变，已内置跨域头） =====================
 class Response:
     """HTTP响应对象：构造响应数据"""
     def __init__(self, status=200, headers=None, body=None):
@@ -103,7 +103,7 @@ class Response:
             self.headers["Content-Type"] = "application/json; charset=utf-8"
         if "Server" not in self.headers:
             self.headers["Server"] = "Python-Native-HTTP-Server"
-        # 跨域配置
+        # 跨域配置（原有配置，已满足需求）
         self.headers["Access-Control-Allow-Origin"] = "*"
         self.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,PATCH,OPTIONS"
         self.headers["Access-Control-Allow-Headers"] = "Content-Type,X-CSRF-Token,Authorization"
@@ -172,7 +172,7 @@ def handle_request(raw_data, client_addr):
         request = Request(raw_data, client_addr)
         response = Response()
 
-        # 处理OPTIONS预检请求
+        # 处理OPTIONS预检请求（原有逻辑，已适配跨域）
         if request.method == "OPTIONS":
             return response.build()
 
@@ -226,11 +226,12 @@ def handle_request(raw_data, client_addr):
         response.json({"code": 500, "msg": error_msg}, 500)
         return response.build()
 
-# ===================== 基于HTTPServer的请求处理器（新增核心） =====================
+# ===================== 修复后的HTTPServer请求处理器（核心修改） =====================
 class HTTPServerRequestHandler(BaseHTTPRequestHandler):
     """
     自定义HTTPServer请求处理器
     桥接HTTPServer和原有handle_request逻辑，无侵入式适配
+    修复：删除未定义方法调用 + 移除重复do_OPTIONS + 复用原有跨域逻辑
     """
     def do_GET(self):
         """处理GET请求：复用原有handle_request"""
@@ -253,11 +254,11 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
         self._handle_all_methods()
 
     def do_OPTIONS(self):
-        """处理OPTIONS请求：复用原有handle_request"""
+        """处理OPTIONS预检请求：复用原有handle_request（核心，无需单独设置头）"""
         self._handle_all_methods()
 
     def _handle_all_methods(self):
-        """统一处理所有HTTP方法，桥接原有逻辑"""
+        """统一处理所有HTTP方法，桥接原有逻辑（完全不变）"""
         # 1. 构造原始请求数据（模拟原生socket的raw_data格式）
         # 拼接请求行
         request_line = f"{self.command} {self.path} HTTP/1.1\r\n"
@@ -269,7 +270,7 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
         # 拼接完整raw_data（与原有socket的raw_data格式完全一致）
         raw_data = (request_line + request_headers + "\r\n").encode("utf-8") + request_body
 
-        # 2. 调用原有请求处理逻辑，获取响应
+        # 2. 调用原有请求处理逻辑，获取响应（原有跨域/OPTIONS逻辑已处理）
         client_addr = self.client_address  # 客户端地址（ip, port）
         response = handle_request(raw_data, client_addr)
 
@@ -280,7 +281,7 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
         """重写日志方法：禁用HTTPServer默认控制台日志，统一使用项目logger"""
         pass
 
-# ===================== 启动HTTPServer服务（替代原有socket启动） =====================
+# ===================== 启动HTTPServer服务（完全不变） =====================
 def run_http_server(host, port):
     """
     启动基于Python原生HTTPServer的HTTP服务

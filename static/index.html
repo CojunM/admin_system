@@ -97,7 +97,14 @@
 
             try {
                 loading.show();
-                const res = await api.post('/api/user/info/login', { username, password });
+                const res = await api.post('/api/user/login', { username, password });
+                // 确保res.data.token存在（后端返回的token字段），再存储
+                if (res && res.token) { // 按后端实际返回格式调整，比如res.data.token
+                    localStorage.setItem('token', res.token); // 存储纯Token字符串，无Bearer前缀
+                } else {
+                    alert('登录成功，但未获取到令牌，请刷新重试');
+                    return;
+                }
                 if (res.code === 200) {
                     // 保存Token
                     store.set('token', res.data.token);
