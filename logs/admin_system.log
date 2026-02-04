@@ -1,0 +1,999 @@
+2026-01-29 09:15:22 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:24:58 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:36:16 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:39:41 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:40:39 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:41:26 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:41:26 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 09:41:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 09:41:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 09:41:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 09:41:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 09:41:27 - admin-system - INFO - server.py:308 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 09:41:27 - admin-system - INFO - server.py:309 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 09:41:27 - admin-system - INFO - server.py:310 - [Server] Press CTRL+C to stop server
+2026-01-29 09:42:20 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-01-29 09:42:29 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-01-29 09:42:51 - admin-system - WARNING - csrf.py:54 - [CSRF] Invalid token from ('127.0.0.1', 51314), path: /api/user/login
+2026-01-29 09:43:00 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-01-29 09:49:17 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 09:49:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 09:49:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 09:49:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 09:49:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 09:49:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 09:49:20 - admin-system - INFO - server.py:308 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 09:49:20 - admin-system - INFO - server.py:309 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 09:49:20 - admin-system - INFO - server.py:310 - [Server] Press CTRL+C to stop server
+2026-01-29 09:49:38 - admin-system - ERROR - server.py:237 - [Server] Handle request error: user_login() got an unexpected keyword argument 'username'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 223, in handle_request
+    result = handler(request, **all_params)
+TypeError: user_login() got an unexpected keyword argument 'username'
+2026-01-29 14:17:15 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 14:17:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 14:17:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 14:17:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 14:17:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 14:17:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 14:17:16 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 14:17:16 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 14:17:16 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 14:25:15 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 14:25:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 14:25:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 14:25:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 14:25:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 14:25:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 14:25:18 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 14:25:18 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 14:25:18 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 14:25:38 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-01-29 14:25:45 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-01-29 14:26:22 - admin-system - ERROR - server.py:255 - [Server] Handle request error: name 'POOL_INSTANCE_NAME' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 144, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    pool = get_db_pool(POOL_INSTANCE_NAME)
+NameError: name 'POOL_INSTANCE_NAME' is not defined
+2026-01-29 14:26:30 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-01-29 14:48:46 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 14:48:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 14:48:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 14:48:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 14:48:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 14:48:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 14:48:48 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 14:48:48 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 14:48:48 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 14:49:39 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-01-29 14:49:44 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-01-29 14:49:45 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-01-29 14:49:57 - admin-system - ERROR - server.py:255 - [Server] Handle request error: get_db_pool() takes 0 positional arguments but 1 was given
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 144, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    pool = get_db_pool(POOL_INSTANCE_NAME)
+TypeError: get_db_pool() takes 0 positional arguments but 1 was given
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 231, in handle_request
+    result = handler(request, **all_params)
+TypeError: user_login() got an unexpected keyword argument 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 236, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 144, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    pool = get_db_pool(POOL_INSTANCE_NAME)
+TypeError: get_db_pool() takes 0 positional arguments but 1 was given
+2026-01-29 14:52:09 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 14:52:10 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 14:52:10 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 14:52:10 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 14:52:10 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 14:52:10 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 14:52:10 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 14:52:10 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 14:52:10 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 14:52:10 - admin-system - ERROR - server.py:255 - [Server] Handle request error: name 'DatabaseError' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 27, in get_db_pool
+    dsn=DATABASE_URL
+NameError: name 'DATABASE_URL' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 144, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    pool = get_db_pool()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 34, in get_db_pool
+    raise DatabaseError(f"数据库连接池初始化失败：{str(e)}")
+NameError: name 'DatabaseError' is not defined
+2026-01-29 16:25:30 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 16:25:32 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 16:25:32 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 16:25:32 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 16:25:32 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 16:25:32 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 16:25:32 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 16:25:32 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 16:25:32 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 17:57:08 - admin-system - ERROR - server.py:255 - [Server] Handle request error: type object 'DatabasePool' has no attribute 'get_db_pool'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 144, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    pool = DatabasePool.get_db_pool()
+AttributeError: type object 'DatabasePool' has no attribute 'get_db_pool'
+2026-01-29 18:02:19 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 18:02:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 18:02:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 18:02:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 18:02:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 18:02:19 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 18:02:20 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 18:02:20 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 18:02:20 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 18:02:40 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-01-29 18:02:40 - admin-system - ERROR - server.py:255 - [Server] Handle request error: invalid literal for int() with base 10: '00000000-0000-0000-0000-000000000001'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 155, in get
+    setattr(instance, field_name, field.from_db_value(data.get(field_name)))
+  File "E:\admin-system\admin_system\core\orm\base.py", line 35, in from_db_value
+    return self._from_db(value)
+  File "E:\admin-system\admin_system\core\orm\fields.py", line 20, in _from_db
+    return int(value) if value is not None else None
+ValueError: invalid literal for int() with base 10: '00000000-0000-0000-0000-000000000001'
+2026-01-29 18:11:22 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 18:11:23 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 18:11:23 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 18:11:23 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 18:11:23 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 18:11:23 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 18:11:23 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 18:11:23 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 18:11:23 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 18:11:24 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-01-29 18:11:24 - admin-system - ERROR - server.py:255 - [Server] Handle request error: Cannot convert UUID '00000000-0000-0000-0000-000000000001' to integer in IntField
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 155, in get
+    setattr(instance, field_name, field.from_db_value(data.get(field_name)))
+  File "E:\admin-system\admin_system\core\orm\base.py", line 35, in from_db_value
+    return self._from_db(value)
+  File "E:\admin-system\admin_system\core\orm\fields.py", line 18, in _from_db
+    raise ValueError(f"Cannot convert UUID '{value}' to integer in IntField")
+ValueError: Cannot convert UUID '00000000-0000-0000-0000-000000000001' to integer in IntField
+2026-01-29 20:58:49 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-29 20:58:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-29 20:58:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-29 20:58:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-29 20:58:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-29 20:58:50 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-29 20:58:50 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-29 20:58:50 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-29 20:58:50 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-29 20:59:13 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-01-29 20:59:16 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-01-29 20:59:33 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-01-29 20:59:33 - admin-system - ERROR - server.py:255 - [Server] Handle request error: 'NoneType' object has no attribute 'split'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 31, in user_login
+    if not verify_pwd(password, user.password):
+  File "E:\admin-system\admin_system\utils\crypto.py", line 48, in verify_pwd
+    salt, hashed_password = encrypted_password.split(':', 1)
+AttributeError: 'NoneType' object has no attribute 'split'
+2026-01-29 20:59:39 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-01-30 15:13:46 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-30 15:13:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-30 15:13:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-30 15:13:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-30 15:13:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-30 15:13:49 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-30 15:13:49 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-30 15:13:49 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-30 15:13:49 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-01-30 15:14:05 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-01-30 15:14:05 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-01-30 15:14:10 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-01-30 15:14:10 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-01-30 15:14:36 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-01-30 15:14:36 - admin-system - ERROR - server.py:255 - [Server] Handle request error: 'NoneType' object has no attribute 'split'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 31, in user_login
+    if not verify_pwd(password, user.password):
+  File "E:\admin-system\admin_system\utils\crypto.py", line 48, in verify_pwd
+    salt, hashed_password = encrypted_password.split(':', 1)
+AttributeError: 'NoneType' object has no attribute 'split'
+2026-01-30 15:14:43 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-01-30 15:34:58 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-01-30 15:34:59 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-01-30 15:35:00 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-01-30 15:35:00 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-01-30 15:35:00 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-01-30 15:35:00 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-01-30 15:35:00 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-01-30 15:35:01 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-01-30 15:35:01 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 09:10:43 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 09:10:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 09:10:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 09:10:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 09:10:48 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 09:10:49 - admin-system - ERROR - run.py:28 - [Server] Failed to load apps.user.views: cannot import name 'encrypt_pwd' from 'utils.crypto' (E:\admin-system\admin_system\utils\crypto.py)
+2026-02-02 09:10:49 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 09:10:49 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 09:10:49 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 09:11:32 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-02-02 09:11:34 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-02-02 09:14:17 - admin-system - INFO - router.py:82 - [Router] No match route POST /api/user/login
+2026-02-02 09:14:42 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-02 09:21:21 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 09:21:21 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 09:21:21 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 09:21:21 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 09:21:21 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 09:21:21 - admin-system - ERROR - run.py:28 - [Server] Failed to load apps.user.views: cannot import name 'encrypt_pwd' from 'utils.crypto' (E:\admin-system\admin_system\utils\crypto.py)
+2026-02-02 09:21:21 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 09:21:21 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 09:21:21 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 09:21:23 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-02-02 09:21:24 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-02 09:21:28 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-02-02 09:25:33 - admin-system - INFO - router.py:82 - [Router] No match route POST /api/user/login
+2026-02-02 09:29:46 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 09:29:47 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 09:29:47 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 09:29:47 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 09:29:47 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 09:29:47 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 09:29:47 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 09:29:47 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 09:29:47 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 09:31:16 - admin-system - ERROR - pool.py:27 - ❌ 数据库连接池初始化失败: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 09:31:19 - admin-system - ERROR - server.py:255 - [Server] Handle request error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 143, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    conn = DatabasePool.get_connection()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 34, in get_connection
+    cls.init_pool()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 09:52:40 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 09:52:41 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 09:52:41 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 09:52:41 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 09:52:41 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 09:52:41 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 09:52:41 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 09:52:41 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 09:52:41 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 09:52:55 - admin-system - ERROR - pool.py:27 - ❌ 数据库连接池初始化失败: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 09:52:55 - admin-system - ERROR - server.py:255 - [Server] Handle request error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 143, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    conn = DatabasePool.get_connection()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 34, in get_connection
+    cls.init_pool()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 12:33:22 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 12:33:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 12:33:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 12:33:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 12:33:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 12:33:27 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 12:33:27 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 12:33:27 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 12:33:27 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 12:34:03 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-02-02 12:34:06 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-02-02 12:34:42 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-02 12:34:42 - admin-system - ERROR - server.py:255 - [Server] Handle request error: 'int' object has no attribute 'replace'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 155, in get
+    setattr(instance, field_name, field.from_db_value(data.get(field_name)))
+  File "E:\admin-system\admin_system\core\orm\base.py", line 35, in from_db_value
+    return self._from_db(value)
+  File "E:\admin-system\admin_system\core\orm\fields.py", line 65, in _from_db
+    return str(uuid.UUID(value))
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\uuid.py", line 174, in __init__
+    hex = hex.replace('urn:', '').replace('uuid:', '')
+AttributeError: 'int' object has no attribute 'replace'
+2026-02-02 12:34:48 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-02 12:37:14 - admin-system - ERROR - server.py:255 - [Server] Handle request error: 'int' object has no attribute 'replace'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 155, in get
+    setattr(instance, field_name, field.from_db_value(data.get(field_name)))
+  File "E:\admin-system\admin_system\core\orm\base.py", line 35, in from_db_value
+    return self._from_db(value)
+  File "E:\admin-system\admin_system\core\orm\fields.py", line 65, in _from_db
+    return str(uuid.UUID(value))
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\uuid.py", line 174, in __init__
+    hex = hex.replace('urn:', '').replace('uuid:', '')
+AttributeError: 'int' object has no attribute 'replace'
+2026-02-02 12:40:21 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 12:40:29 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 12:40:29 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 12:40:30 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 12:40:30 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 12:40:31 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 12:40:31 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 12:40:31 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 12:40:31 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 12:42:15 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-02-02 12:42:44 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-02 12:42:45 - admin-system - WARNING - views.py:32 - [User] Login failed, wrong password for admin
+2026-02-02 12:43:07 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-02 12:44:18 - admin-system - WARNING - views.py:32 - [User] Login failed, wrong password for admin
+2026-02-02 12:58:15 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 12:58:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 12:58:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 12:58:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 12:58:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 12:58:16 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 12:58:17 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 12:58:17 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 12:58:17 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 12:59:20 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-02-02 12:59:26 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-02-02 12:59:55 - admin-system - ERROR - pool.py:27 - ❌ 数据库连接池初始化失败: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 12:59:59 - admin-system - ERROR - server.py:255 - [Server] Handle request error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 143, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    conn = DatabasePool.get_connection()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 34, in get_connection
+    cls.init_pool()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 13:00:06 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-02 13:07:31 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 13:07:31 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 13:07:31 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 13:07:31 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 13:07:31 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 13:07:31 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 13:07:31 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 13:07:31 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 13:07:31 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 13:08:02 - admin-system - INFO - router.py:82 - [Router] No match route GET /
+2026-02-02 13:08:04 - admin-system - INFO - router.py:82 - [Router] No match route GET /favicon.ico
+2026-02-02 13:09:30 - admin-system - ERROR - pool.py:27 - ❌ 数据库连接池初始化失败: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 13:09:30 - admin-system - ERROR - server.py:255 - [Server] Handle request error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 227, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 24, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 143, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    conn = DatabasePool.get_connection()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 34, in get_connection
+    cls.init_pool()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 13:09:36 - admin-system - INFO - router.py:82 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-02 13:10:17 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 13:10:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.dashboard.views
+2026-02-02 13:10:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.notify.views
+2026-02-02 13:10:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.permission.views
+2026-02-02 13:10:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.role.views
+2026-02-02 13:10:17 - admin-system - INFO - run.py:26 - [Server] Loaded routes from apps.user.views
+2026-02-02 13:10:17 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-02 13:10:17 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-02 13:10:17 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-02 15:34:35 - admin-system - INFO - server.py:352 - [Server] Server stopping by user (CTRL+C)
+2026-02-02 15:34:35 - admin-system - INFO - server.py:359 - [Server] HTTPServer stopped successfully
+2026-02-02 16:00:24 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 16:00:26 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-02 16:00:26 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-02 16:00:26 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-02 16:00:26 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-02 16:00:26 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-02 16:00:28 - admin-system - ERROR - pool.py:27 - ❌ 数据库连接池初始化失败: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 16:00:28 - admin-system - ERROR - run.py:34 - [System] Database pool initialization failed: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 16:00:28 - admin-system - ERROR - run.py:111 - [System] Database initialization failed, exiting...
+2026-02-02 16:02:54 - admin-system - INFO - router.py:21 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-02 16:03:00 - admin-system - ERROR - pool.py:27 - ❌ 数据库连接池初始化失败: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 15, in init_pool
+    cls._connection_pool = psycopg2.pool.SimpleConnectionPool(
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-02 16:03:00 - admin-system - ERROR - base.py:164 - [ORM] Get error in User: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-02-03 14:53:10 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 14:53:16 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 14:53:16 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 14:53:16 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 14:53:16 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 14:53:18 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 14:53:18 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 14:53:18 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 14:53:18 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 14:53:19 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 14:53:19 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 14:53:19 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 14:53:19 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 14:53:19 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 14:53:19 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 14:53:19 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 14:53:19 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 14:53:19 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 14:53:19 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 14:53:32 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:53:37 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:55:41 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:55:43 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:55:46 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:55:47 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:55:57 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:55:57 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:56:37 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:56:38 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:57:55 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:57:56 - admin-system - ERROR - server.py:268 - [Server] Handle request error: name 'hook_manager' is not defined
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 178, in handle_request
+    hook_manager.run_before_request(request)
+NameError: name 'hook_manager' is not defined
+2026-02-03 14:58:31 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 14:58:31 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 14:58:31 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 14:58:31 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 14:58:31 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 14:58:35 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 14:58:36 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 14:58:36 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 14:58:36 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 14:58:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 14:58:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 14:58:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 14:58:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 14:58:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 14:58:37 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 14:58:37 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 14:58:37 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 14:58:37 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 14:58:37 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 14:59:05 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 14:59:09 - admin-system - INFO - router.py:153 - [Router] No match route GET /favicon.ico
+2026-02-03 14:59:18 - admin-system - WARNING - views.py:40 - [User] Login failed, wrong password for admin from ('127.0.0.1', 52480)
+2026-02-03 14:59:42 - admin-system - INFO - router.py:153 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-03 15:11:55 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 15:11:55 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 15:11:55 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 15:11:55 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 15:11:55 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 15:11:56 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 15:11:56 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 15:11:56 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 15:11:56 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 15:11:56 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 15:11:56 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 15:11:56 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 15:11:56 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 15:11:56 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 15:11:56 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 15:11:56 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 15:11:56 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 15:11:56 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 15:11:56 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 15:12:05 - admin-system - ERROR - base.py:164 - [ORM] Get error in Role: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 15:12:05 - admin-system - ERROR - views.py:65 - [User] Failed to get role for user 1: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 15:12:05 - admin-system - INFO - views.py:68 - [User] admin login success from ('127.0.0.1', 53287)
+2026-02-03 15:12:22 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 15:12:23 - admin-system - INFO - router.py:153 - [Router] No match route GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-03 15:12:26 - admin-system - INFO - router.py:153 - [Router] No match route GET /favicon.ico
+2026-02-03 15:12:40 - admin-system - ERROR - base.py:164 - [ORM] Get error in Role: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 15:12:40 - admin-system - ERROR - views.py:65 - [User] Failed to get role for user 1: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 15:12:40 - admin-system - INFO - views.py:68 - [User] admin login success from ('127.0.0.1', 53328)
+2026-02-03 15:21:13 - admin-system - ERROR - base.py:164 - [ORM] Get error in Role: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 15:21:13 - admin-system - ERROR - views.py:65 - [User] Failed to get role for user 1: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 15:21:13 - admin-system - INFO - views.py:68 - [User] admin login success from ('127.0.0.1', 53601)
+2026-02-03 15:22:45 - admin-system - INFO - server.py:352 - [Server] Server stopping by user (CTRL+C)
+2026-02-03 15:22:45 - admin-system - INFO - server.py:359 - [Server] HTTPServer stopped successfully
+2026-02-03 15:52:27 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 15:52:27 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 15:52:27 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 15:52:27 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 15:52:27 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 15:52:28 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 15:52:28 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 15:52:28 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 15:52:28 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 15:52:29 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 15:52:29 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 15:52:29 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 15:52:29 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 15:52:29 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 15:52:29 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 15:52:29 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 15:52:30 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 15:52:30 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 15:52:30 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 15:52:58 - admin-system - ERROR - views.py:77 - [User] Login error: unsupported operand type(s) for &: 'str' and 'dict'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\apps\user\views.py", line 58, in user_login
+    print ('user_info:'& user_info,'token:'&token )
+TypeError: unsupported operand type(s) for &: 'str' and 'dict'
+2026-02-03 15:59:51 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 15:59:52 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 15:59:52 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 15:59:52 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 15:59:52 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 15:59:53 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 15:59:57 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 15:59:57 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 15:59:57 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 15:59:57 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 15:59:57 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 15:59:57 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 15:59:57 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 15:59:57 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 15:59:57 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 15:59:57 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 15:59:58 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 15:59:58 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 15:59:58 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:01:20 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:01:21 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:01:22 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:01:22 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:01:22 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:01:34 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:01:35 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:01:35 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:01:35 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:01:36 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:01:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:01:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:01:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:01:37 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:01:37 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:01:37 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:01:38 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:01:38 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:01:38 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:02:16 - admin-system - ERROR - views.py:77 - [User] Login error: 'dict' object has no attribute 'tostring'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\apps\user\views.py", line 58, in user_login
+    print ('user_info:'+user_info.tostring,'token:'+token )
+AttributeError: 'dict' object has no attribute 'tostring'
+2026-02-03 16:03:53 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:03:56 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:03:56 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:03:56 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:03:56 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:04:01 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:04:03 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:04:03 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:04:03 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:04:03 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:04:03 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:04:03 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:04:03 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:04:03 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:04:03 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:04:03 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:04:03 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:04:03 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:04:03 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:04:07 - admin-system - ERROR - views.py:77 - [User] Login error: 'dict' object has no attribute 'tostring'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\apps\user\views.py", line 58, in user_login
+    print ('user_info:',user_info.tostring,'token:',token )
+AttributeError: 'dict' object has no attribute 'tostring'
+2026-02-03 16:06:34 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:06:44 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:06:44 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:06:44 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:06:45 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:06:45 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:07:06 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:07:06 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:07:06 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:07:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:07:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:07:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:07:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:07:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:07:06 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:07:06 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:07:07 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:07:07 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:07:07 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:07:15 - admin-system - ERROR - views.py:66 - [User] Failed to get role for user 1: int() argument must be a string, a bytes-like object or a number, not 'Role'
+2026-02-03 16:07:16 - admin-system - INFO - views.py:69 - [User] admin login success from ('127.0.0.1', 55443)
+2026-02-03 16:16:18 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:16:21 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:16:21 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:16:21 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:16:21 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:16:28 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:16:31 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:16:31 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:16:31 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:16:31 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:16:31 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:16:32 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:16:32 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:16:33 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:16:33 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:16:33 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:16:33 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:16:33 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:16:34 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:19:40 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:20:16 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:23:49 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:23:50 - admin-system - INFO - router.py:153 - [Router] No match route GET /favicon.ico
+2026-02-03 16:24:00 - admin-system - INFO - views.py:69 - [User] admin login success from ('127.0.0.1', 55845)
+2026-02-03 16:28:55 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:28:56 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:28:56 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:28:56 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:28:56 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:29:03 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:29:05 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:29:05 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:29:05 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:29:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:29:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:29:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:29:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:29:06 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:29:07 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:29:07 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:29:07 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:29:07 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:29:07 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:29:16 - admin-system - INFO - views.py:71 - [User] admin login success from ('127.0.0.1', 55925)
+2026-02-03 16:32:01 - admin-system - INFO - views.py:71 - [User] admin login success from ('127.0.0.1', 55949)
+2026-02-03 16:33:13 - admin-system - INFO - views.py:71 - [User] admin login success from ('127.0.0.1', 55961)
+2026-02-03 16:33:45 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:33:59 - admin-system - WARNING - pool.py:43 - 连接失效，重新获取: connection pool exhausted
+2026-02-03 16:33:59 - admin-system - ERROR - base.py:164 - [ORM] Get error in Role: local variable 'conn' referenced before assignment
+2026-02-03 16:33:59 - admin-system - ERROR - base.py:164 - [ORM] Get error in User: local variable 'conn' referenced before assignment
+2026-02-03 16:33:59 - admin-system - ERROR - views.py:79 - [User] Login error: local variable 'conn' referenced before assignment
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 36, in get_connection
+    conn = cls._connection_pool.getconn()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 92, in _getconn
+    raise PoolError("connection pool exhausted")
+psycopg2.pool.PoolError: connection pool exhausted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\apps\user\views.py", line 29, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 158, in get
+    setattr(instance, field_name, field.from_db_value(data.get(field_name)))
+  File "E:\admin-system\admin_system\core\orm\base.py", line 35, in from_db_value
+    return self._from_db(value)
+  File "E:\admin-system\admin_system\core\orm\fields.py", line 112, in _from_db
+    return self.to.get(**{self.to._meta["primary_key"]: value})
+  File "E:\admin-system\admin_system\core\orm\base.py", line 146, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    conn = DatabasePool.get_connection()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 45, in get_connection
+    cls._connection_pool.putconn(conn, close=True)
+UnboundLocalError: local variable 'conn' referenced before assignment
+2026-02-03 16:34:11 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:34:12 - admin-system - INFO - router.py:153 - [Router] No match route GET /favicon.ico
+2026-02-03 16:34:21 - admin-system - WARNING - pool.py:43 - 连接失效，重新获取: connection pool exhausted
+2026-02-03 16:34:21 - admin-system - ERROR - base.py:164 - [ORM] Get error in User: local variable 'conn' referenced before assignment
+2026-02-03 16:34:21 - admin-system - ERROR - views.py:79 - [User] Login error: local variable 'conn' referenced before assignment
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 36, in get_connection
+    conn = cls._connection_pool.getconn()
+  File "c:\Users\Administrator\AppData\Local\Programs\Python\Python39\lib\site-packages\psycopg2\pool.py", line 92, in _getconn
+    raise PoolError("connection pool exhausted")
+psycopg2.pool.PoolError: connection pool exhausted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\apps\user\views.py", line 29, in user_login
+    user = User.get(username=username)
+  File "E:\admin-system\admin_system\core\orm\base.py", line 146, in get
+    conn, cursor = cls._get_cursor()
+  File "E:\admin-system\admin_system\core\orm\base.py", line 114, in _get_cursor
+    conn = DatabasePool.get_connection()
+  File "E:\admin-system\admin_system\core\orm\pool.py", line 45, in get_connection
+    cls._connection_pool.putconn(conn, close=True)
+UnboundLocalError: local variable 'conn' referenced before assignment
+2026-02-03 16:34:48 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:34:49 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:34:49 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:34:49 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:34:49 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:34:51 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:34:53 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:34:53 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:34:53 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:34:53 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:34:53 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:34:53 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:34:53 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:34:53 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:34:54 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:34:54 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:34:55 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:34:55 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:34:55 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:34:59 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:35:04 - admin-system - INFO - router.py:153 - [Router] No match route GET /favicon.ico
+2026-02-03 16:35:15 - admin-system - INFO - views.py:71 - [User] admin login success from ('127.0.0.1', 56100)
+2026-02-03 16:38:56 - admin-system - INFO - router.py:92 - [Router] 全局路由表初始化完成，初始方法：['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+2026-02-03 16:38:57 - admin-system - INFO - run.py:101 - [System] Starting admin system...
+2026-02-03 16:38:57 - admin-system - INFO - run.py:102 - [System] Debug mode: True, Host: 127.0.0.1:8080
+2026-02-03 16:38:57 - admin-system - INFO - run.py:71 - [System] Testing basic components...
+2026-02-03 16:38:57 - admin-system - INFO - run.py:80 - [System] JWT tools working correctly
+2026-02-03 16:39:06 - admin-system - INFO - run.py:92 - [System] Password encryption working correctly
+2026-02-03 16:39:07 - admin-system - INFO - pool.py:25 - ✅ 数据库连接池初始化成功
+2026-02-03 16:39:07 - admin-system - INFO - run.py:31 - [System] Database pool initialized successfully
+2026-02-03 16:39:07 - admin-system - INFO - run.py:17 - [System] Database connection OK
+2026-02-03 16:39:08 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.dashboard.views
+2026-02-03 16:39:08 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.notify.views
+2026-02-03 16:39:08 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.permission.views
+2026-02-03 16:39:08 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.role.views
+2026-02-03 16:39:08 - admin-system - INFO - run.py:56 - [Server] Loaded routes from apps.user.views
+2026-02-03 16:39:08 - admin-system - INFO - run.py:65 - [Server] Route loading completed. Success: 5, Failed: 0
+2026-02-03 16:39:08 - admin-system - INFO - run.py:128 - [System] Starting HTTP server...
+2026-02-03 16:39:08 - admin-system - INFO - server.py:343 - [Server] HTTPServer running on http://127.0.0.1:8080
+2026-02-03 16:39:08 - admin-system - INFO - server.py:344 - [Server] Debug mode: True, Static dir: E:\admin-system\admin_system\static
+2026-02-03 16:39:08 - admin-system - INFO - server.py:345 - [Server] Press CTRL+C to stop server
+2026-02-03 16:39:13 - admin-system - INFO - router.py:153 - [Router] No match route GET /
+2026-02-03 16:39:35 - admin-system - INFO - router.py:153 - [Router] No match route GET /favicon.ico
+2026-02-03 16:39:48 - admin-system - INFO - views.py:71 - [User] admin login success from ('127.0.0.1', 56176)
+2026-02-03 16:39:51 - admin-system - ERROR - server.py:227 - [Middleware] Error in auth_middleware: name 'logger' is not defined
+2026-02-03 16:39:52 - admin-system - WARNING - desensitize.py:46 - [Desensitize] Process failed: Expecting value: line 1 column 1 (char 0)
+2026-02-03 16:39:52 - admin-system - ERROR - server.py:227 - [Middleware] Error in auth_middleware: name 'logger' is not defined
+2026-02-03 16:39:52 - admin-system - ERROR - server.py:251 - [Handler] Error in user_info: 'NoneType' object has no attribute 'get'
+2026-02-03 16:39:52 - admin-system - ERROR - server.py:268 - [Server] Handle request error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 237, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\user\views.py", line 85, in user_info
+    user_id = request.user.get("id")
+AttributeError: 'NoneType' object has no attribute 'get'
+2026-02-03 16:39:52 - admin-system - ERROR - server.py:227 - [Middleware] Error in auth_middleware: name 'logger' is not defined
+2026-02-03 16:39:52 - admin-system - WARNING - desensitize.py:46 - [Desensitize] Process failed: Expecting value: line 1 column 1 (char 0)
+2026-02-03 16:39:52 - admin-system - ERROR - server.py:251 - [Handler] Error in unread_count: 'NoneType' object has no attribute 'get'
+2026-02-03 16:39:52 - admin-system - ERROR - server.py:268 - [Server] Handle request error: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "E:\admin-system\admin_system\core\server.py", line 237, in handle_request
+    result = handler(request)
+  File "E:\admin-system\admin_system\apps\notify\views.py", line 52, in unread_count
+    user_id = request.user.get("id")
+AttributeError: 'NoneType' object has no attribute 'get'
