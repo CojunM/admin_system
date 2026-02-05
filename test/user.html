@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <style>
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        th,
+        td {
+            border: 1px solid #eee;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .nav a {
+            margin-right: 16px;
+            color: #165DFF;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="index.html">仪表盘</a>
+        <a href="user.html">用户管理</a>
+    </div>
+    <div id="app"></div>
+
+    <script src="./mini-solid-vue.js"></script>
+    <script>
+        const { defineComponent, renderComponent, createSignal } = MiniSolidVue;
+
+        defineComponent('UserList', {
+            setup() {
+                // 模拟列表数据
+                const [getUsers] = createSignal([
+                    { id: 1, name: '管理员', role: 'admin' },
+                    { id: 2, name: '测试用户', role: 'user' }
+                ]);
+                return { users: getUsers };
+            },
+            // 支持 v-for 列表渲染
+            template: `
+        <div class="container">
+          <h1>用户管理</h1>
+          <table>
+            <thead>
+              <tr><th>ID</th><th>姓名</th><th>角色</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="user in users()">
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.role }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderComponent('UserList', {}, document.querySelector('#app'));
+        });
+    </script>
+</body>
+
+</html>

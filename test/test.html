@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>终极边界值测试</title>
+    <style>
+        body {
+            padding: 30px;
+        }
+
+        .card {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            width: 380px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="./mini-solid-vue.js"></script>
+    <script>
+        const { defineComponent, renderComponent, createSignal } = MiniSolidVue;
+        defineComponent('AllBoundary', {
+            setup() {
+                return {
+                    nullVal: () => null,
+                    undefVal: () => undefined,
+                    trueVal: () => true,
+                    falseVal: () => false,
+                    zero: () => 0,
+                    emptyStr: () => '',
+                    nanVal: () => NaN,
+                    infinityVal: () => Infinity
+                };
+            },
+            template: `
+        <div class="card">
+          <p>null：{{ nullVal() }}</p>
+          <p>undefined：{{ undefVal() }}</p>
+          <p>true：{{ trueVal() }}</p>
+          <p>false：{{ falseVal() }}</p>
+          <p>数字0：{{ zero() }}</p>
+          <p>空字符串：{{ emptyStr() }}</p>
+          <p>NaN：{{ nanVal() }}</p>
+          <p>Infinity：{{ infinityVal() }}</p>
+        </div>
+      `
+        });
+        renderComponent('AllBoundary', {}, document.getElementById('app'));
+    </script>
+</body>
+
+</html>
