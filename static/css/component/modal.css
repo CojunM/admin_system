@@ -1,0 +1,14 @@
+/* 弹窗样式增强（基础样式已在base.css中） */
+.modal-sm {
+    width: 300px !important;
+}
+
+.modal-lg {
+    width: 800px !important;
+    max-width: 90%;
+}
+
+.modal-body-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+}

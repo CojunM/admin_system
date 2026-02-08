@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SPA 示例</title>
+    <style>
+        .tab-bar {
+            padding: 16px;
+            background: #f5f5f5;
+        }
+
+        .tab-bar button {
+            margin-right: 12px;
+            padding: 6px 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tab-bar">
+        <button onclick="router.push('/')">看板</button>
+        <button onclick="router.push('/user')">用户</button>
+    </div>
+    <div id="app"></div>
+
+    <script src="./mini-solid-vue.js"></script>
+    <script>
+        const { defineComponent, createRouter, createSignal } = MiniSolidVue;
+        // 1. 定义组件
+        defineComponent('Dashboard', {
+            setup: () => ({ msg: '首页组件' }),
+            template: '<div style="padding:20px">{{ msg }}</div>'
+        });
+        defineComponent('User', {
+            setup: () => ({ msg: '用户组件' }),
+            template: '<div style="padding:20px">{{ msg }}</div>'
+        });
+        // 2. 配置路由
+        const routes = [
+            { path: '/', component: 'Dashboard' },
+            { path: '/user', component: 'User' }
+        ];
+        // 3. 初始化路由
+        const router = createRouter(routes);
+        window.addEventListener('DOMContentLoaded', () => {
+            router.mount(document.querySelector('#app'));
+        });
+    </script>
+</body>
+
+</html>

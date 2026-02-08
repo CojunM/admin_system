@@ -9,7 +9,12 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
+<<<<<<< HEAD
             "console": "integratedTerminal"
+=======
+            "console": "integratedTerminal",
+            // "cwd": "${workspaceFolder}"
+>>>>>>> 289428b4ae99476971fff968c7f426cf520a99fe
         }
     ]
 }

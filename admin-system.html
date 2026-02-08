@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>框架修复验证·无空白</title>
+    <style>
+        .box {
+            border: 1px solid #eee;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+        }
+
+        .item {
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 4px 12px;
+            background: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="./solid-mini-fixed.js"></script>
+    <script>
+        // 1. 注册子组件
+        SolidMiniVue.registerComponent('my-card', {
+            template: `
+        <div class="box">
+          <h3>{{title}}</h3>
+          <p v-for="item in list" class="item">→ {{item}}</p>
+          <button @click="onClick">点击触发事件</button>
+        </div>
+      `
+        });
+
+        // 2. 根实例
+        const app = new SolidMiniVue({
+            el: '#app',
+            data: {
+                title: SolidMiniVue.createSignal('框架修复成功·无空白'),
+                list: SolidMiniVue.createSignal(['插值正常', 'v-for正常', '组件嵌套正常', '事件正常'])
+            },
+            methods: {
+                onClick() {
+                    alert('事件绑定成功！');
+                    // 测试响应式更新
+                    this.title.set('已更新标题·响应式正常');
+                }
+            },
+            // 根模板：使用组件+插值+循环+事件
+            template: `
+        <div>
+          <h2>{{title}}</h2>
+          <my-card></my-card>
+        </div>
+      `
+        });
+    </script>
+</body>
+
+</html>

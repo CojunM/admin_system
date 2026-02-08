@@ -1,0 +1,75 @@
+backend-admin-system/
+├── backend/                  # 后端核心代码（Python原生）
+│   ├── __init__.py
+│   ├── config.py             # 全局配置（数据库、限流、热更新等）
+│   ├── server.py             # 主服务入口（HTTP服务器、路由注册）
+│   ├── router/               # 路由核心模块
+│   │   ├── __init__.py
+│   │   ├── route_decorator.py# Bottle风格@route装饰器、RESTful路由
+│   │   └── request_handler.py# 请求解析、响应封装
+│   ├── orm/                  # 类Peewee ORM（带PG连接池）
+│   │   ├── __init__.py
+│   │   ├── core.py           # ORM核心（Model/Field/Query）
+│   │   └── pool.py           # 可配置PG连接池
+│   ├── hot_reload/           # 运行时模块热更新（importlib实现）
+│   │   ├── __init__.py
+│   │   └── reload.py         # 热更新核心逻辑
+│   ├── auth/                 # 权限与认证
+│   │   ├── __init__.py
+│   │   ├── permission.py     # 细粒度权限控制
+│   │   ├── password.py       # 密码加密/验证
+│   │   └── csrf.py           # CSRF防护
+│   ├── middleware/           # 中间件（限流、日志、节流防抖等）
+│   │   ├── __init__.py
+│   │   ├── rate_limit.py     # 接口访问频率限制
+│   │   ├── throttle_debounce.py # 请求节流/防抖
+│   │   └── desensitize.py    # 敏感数据脱敏
+│   ├── utils/                # 工具类
+│   │   ├── __init__.py
+│   │   ├── logger.py         # 全局日志配置
+│   │   ├── pagination.py     # 分页工具
+│   │   └── tree.py           # 树形数据处理
+│   ├── models/              # 业务模型（基于自定义ORM）
+│   │   ├── __init__.py
+│   │   ├── user.py           # 用户模型
+│   │   ├── role.py           # 角色模型
+│   │   ├── permission.py     # 权限模型
+│   │   └── notice.py         # 消息通知模型
+│   └── api/                  # 业务API（热更新模块）
+│       ├── __init__.py
+│       ├── user_api.py       # 用户接口（热更新目标）
+│       ├── role_api.py       # 角色接口（热更新目标）
+│       └── notice_api.py     # 通知接口（热更新目标）
+├── frontend/                 # 前端核心代码（原生+组件化）
+│   ├── index.html            # 主入口页面
+│   ├── assets/               # 静态资源
+│   │   ├── css/
+│   │   │   ├── main.css      # 主样式
+│   │   │   ├── theme-light.css # 亮色主题
+│   │   │   └── theme-dark.css  # 暗色主题
+│   │   └── js/
+│   │       ├── core/         # 前端核心工具
+│   │       │   ├── request.js # 请求封装（CSRF、节流防抖）
+│   │       │   ├── storage.js # 本地存储
+│   │       │   └── desensitize.js # 前端脱敏
+│   │       ├── components/   # 可复用组件（模板化）
+│   │       │   ├── Layout.js # 布局组件
+│   │       │   ├── Table.js  # 虚拟滚动表格组件
+│   │       │   ├── Tree.js   # 树形组件
+│   │       │   ├── Pagination.js # 分页组件
+│   │       │   ├── Modal.js  # 弹窗组件
+│   │       │   ├── Notice.js # 消息通知组件
+│   │       │   └── ThemeSwitch.js # 主题切换组件
+│   │       ├── pages/        # 页面组件
+│   │       │   ├── Login.js  # 登录页
+│   │       │   ├── UserManage.js # 用户管理
+│   │       │   ├── RoleManage.js # 角色管理
+│   │       │   └── NoticeCenter.js # 通知中心
+│   │       └── main.js       # 前端入口（组件注册、初始化）
+│   └── templates/            # HTML模板（组件化模板）
+│       ├── layout.html
+│       ├── table.html
+│       └── tree.html
+├── requirements.txt          # 后端依赖
+├── init_db.sql               # 数据库初始化脚本
+└── README.md                 # 运行说明

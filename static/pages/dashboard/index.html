@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="page-header">
+        <h2>仪表盘</h2>
+    </div>
+    <!-- 统计卡片 -->
+    <div class="flex gap-10 mb-20">
+        <div class="stat-card flex-1 p-6 rounded-lg shadow-sm bg-white">
+            <div class="stat-icon w-12 h-12 rounded-full bg-primary/10 flex align-center justify-center mb-4">
+                <i class="fa-solid fa-user text-primary text-xl"></i>
+            </div>
+            <div class="stat-value text-2xl font-bold" id="user-count">0</div>
+            <div class="stat-name text-gray-500">总用户数</div>
+        </div>
+        <div class="stat-card flex-1 p-6 rounded-lg shadow-sm bg-white">
+            <div class="stat-icon w-12 h-12 rounded-full bg-success/10 flex align-center justify-center mb-4">
+                <i class="fa-solid fa-shield-halved text-success text-xl"></i>
+            </div>
+            <div class="stat-value text-2xl font-bold" id="role-count">0</div>
+            <div class="stat-name text-gray-500">总角色数</div>
+        </div>
+        <div class="stat-card flex-1 p-6 rounded-lg shadow-sm bg-white">
+            <div class="stat-icon w-12 h-12 rounded-full bg-warning/10 flex align-center justify-center mb-4">
+                <i class="fa-solid fa-key text-warning text-xl"></i>
+            </div>
+            <div class="stat-value text-2xl font-bold" id="perm-count">0</div>
+            <div class="stat-name text-gray-500">总权限数</div>
+        </div>
+        <div class="stat-card flex-1 p-6 rounded-lg shadow-sm bg-white">
+            <div class="stat-icon w-12 h-12 rounded-full bg-danger/10 flex align-center justify-center mb-4">
+                <i class="fa-solid fa-bell text-danger text-xl"></i>
+            </div>
+            <div class="stat-value text-2xl font-bold" id="unread-notify">0</div>
+            <div class="stat-name text-gray-500">未读通知</div>
+        </div>
+    </div>
+    <!-- 角色分布 -->
+    <div class="container mb-20">
+        <h3 class="mb-4">角色分布</h3>
+        <div id="role-dist" class="h-60 rounded-lg border border-gray-200 p-4"></div>
+    </div>
+</div>

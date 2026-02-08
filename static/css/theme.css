@@ -1,0 +1,126 @@
+/* 亮色主题（默认） */
+#app.light {
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+#app.light .app-header,
+#app.light .sidebar {
+    background-color: #fff;
+}
+
+#app.light .container {
+    background-color: #fff;
+}
+
+#app.light .form-input,
+#app.light .btn-default {
+    border-color: #dcdcdc;
+    color: #333;
+}
+
+#app.light .table th,
+#app.light .table td {
+    border-color: #eee;
+}
+
+#app.light .table th {
+    background-color: #f5f7fa;
+}
+
+/* 暗色主题 */
+#app.dark {
+    background-color: #1f2125;
+    color: #e5e7eb;
+}
+
+#app.dark .app-header,
+#app.dark .sidebar {
+    background-color: #2d3035;
+    border-color: #444;
+}
+
+#app.dark .container {
+    background-color: #2d3035;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
+#app.dark .form-input {
+    border-color: #444;
+    color: #e5e7eb;
+    background-color: #373a40;
+}
+
+#app.dark .form-input:focus {
+    border-color: #409eff;
+}
+
+#app.dark .btn-default {
+    border-color: #444;
+    color: #e5e7eb;
+}
+
+#app.dark .btn-default:hover {
+    background-color: #444;
+}
+
+#app.dark .table th,
+#app.dark .table td {
+    border-color: #444;
+}
+
+#app.dark .table th {
+    background-color: #373a40;
+}
+
+#app.dark .pagination-item {
+    border-color: #444;
+}
+
+#app.dark .pagination-item:hover:not(.active) {
+    border-color: #409eff;
+}
+
+#app.dark .modal-container {
+    background-color: #2d3035;
+}
+
+#app.dark .modal-header,
+#app.dark .modal-footer {
+    border-color: #444;
+}
+
+#app.dark .loading {
+    background: rgba(31, 33, 37, 0.8);
+}
+
+/* 主题切换按钮 */
+.theme-switch {
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #dcdcdc;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.theme-switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: left 0.3s;
+}
+
+#app.dark .theme-switch {
+    background-color: #409eff;
+}
+
+#app.dark .theme-switch::after {
+    left: 22px;
+}
