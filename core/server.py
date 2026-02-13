@@ -88,7 +88,7 @@ class Request:
         else:
             self.body = {}
 
-# ===================== 原有Response类（完全不变，已内置跨域头） =====================
+# ===================== 原有Response类（完全不变） =====================
 class Response:
     """HTTP响应对象：构造响应数据"""
     def __init__(self, status=200, headers=None, body=None):
@@ -103,18 +103,64 @@ class Response:
             self.headers["Content-Type"] = "application/json; charset=utf-8"
         if "Server" not in self.headers:
             self.headers["Server"] = "Python-Native-HTTP-Server"
-        # 跨域配置（原有配置，已满足需求）
+        # 跨域配置
         self.headers["Access-Control-Allow-Origin"] = "*"
         self.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,PATCH,OPTIONS"
         self.headers["Access-Control-Allow-Headers"] = "Content-Type,X-CSRF-Token,Authorization"
 
-    def set_cookie(self, name, value, max_age=None, path="/"):
-        """设置Cookie"""
-        cookie = f"{name}={value}; Path={path}"
-        if max_age:
-            cookie += f"; Max-Age={max_age}"
-        self.headers["Set-Cookie"] = cookie
+    def set_cookie(
+        self,
+        name: str,
+        value: str,
+        max_age: int = None,
+        path: str = "/",
+        httponly: bool = False,
+        samesite: str = None  # Strict/Lax/None
+    ):
+        """
+        设置Cookie（支持扩展参数）
+        :param name: Cookie名
+        :param value: Cookie值
+        :param max_age: 有效期（秒），默认会话级（关闭浏览器失效）
+        :param path: Cookie生效路径，默认/
+        :param httponly: 是否禁止前端JS读取，默认False
+        :param samesite: 跨域策略，默认None（不设置）
+        """
+        # 1. 基础Cookie键值对（处理值的编码，避免特殊字符）
+        cookie_parts = [f"{name}={self._encode_cookie_value(value)}"]
+        
+        # 2. 添加基础属性
+        if max_age is not None and isinstance(max_age, int):
+            cookie_parts.append(f"Max-Age={max_age}")
+        if path:
+            cookie_parts.append(f"Path={path}")
+        
+        # 3. 添加扩展属性（httponly/samesite）
+        if httponly:
+            cookie_parts.append("HttpOnly")  # 布尔属性，无值
+        if samesite:
+            # 验证samesite值的合法性
+            valid_samesite = ["Strict", "Lax", "None"]
+            if samesite.capitalize() in valid_samesite:
+                cookie_parts.append(f"SameSite={samesite.capitalize()}")
+            else:
+                logger.warning(f"[Response] 无效的SameSite值：{samesite}，仅支持{valid_samesite}")
+        
+        # 4. 拼接成完整的Set-Cookie头
+        cookie_header = "; ".join(cookie_parts)
+        
+        # 5. 处理多个Cookie（Set-Cookie头可重复）
+        existing_cookies = self.headers.get("Set-Cookie", "")
+        if existing_cookies:
+            # 多个Cookie用换行分隔（部分服务器支持逗号，换行更通用）
+            self.headers["Set-Cookie"] = f"{existing_cookies}\n{cookie_header}"
+        else:
+            self.headers["Set-Cookie"] = cookie_header
 
+    def _encode_cookie_value(self, value: str) -> str:
+        """编码Cookie值（处理特殊字符，如空格、逗号、分号）"""
+        import urllib.parse
+        return urllib.parse.quote(str(value), safe="")
     def json(self, data, status=200):
         """构造JSON响应"""
         self.status = status
@@ -163,16 +209,29 @@ class Response:
         response_body = self.body
         # 拼接所有部分
         return (response_line + response_headers + "\r\n").encode("utf-8") + response_body
-
-# ===================== 原有请求处理逻辑（完全不变） =====================
+def set_cors_headers(response):
+    """设置跨域响应头，允许前端携带Cookie"""
+    response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:8080"  # 前端域名
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-CSRF-Token"  # 允许CSRF Token请求头
+    response.headers["Access-Control-Allow-Credentials"] = "true"  # 关键：允许携带Cookie
+    return response
+def set_cors_headers(response):
+    """设置跨域响应头，允许前端携带Cookie"""
+    response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:8080"  # 前端域名
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-CSRF-Token"  # 允许CSRF Token请求头
+    response.headers["Access-Control-Allow-Credentials"] = "true"  # 关键：允许携带Cookie
+    return response
 def handle_request(raw_data, client_addr):
     """处理单个HTTP请求"""
     try:
         # 1. 解析请求
         request = Request(raw_data, client_addr)
         response = Response()
-
-        # 处理OPTIONS预检请求（原有逻辑，已适配跨域）
+        # 先设置跨域头
+        response = set_cors_headers(response)
+        # 处理OPTIONS预检请求
         if request.method == "OPTIONS":
             return response.build()
 
@@ -204,9 +263,15 @@ def handle_request(raw_data, client_addr):
                 return middleware_result.build()
 
         # 4. 执行接口处理器
+        # 修复后：只传递函数声明的参数（避免多余参数）
+        import inspect
+        # 获取handler函数的参数列表
+        handler_params = inspect.signature(handler).parameters
         # 合并参数：path_params > query > body
         all_params = {**request.body, **query, **params}
-        result = handler(request, **all_params)
+        # 筛选出handler需要的参数（只保留函数声明过的）
+        valid_params = {k: v for k, v in all_params.items() if k in handler_params}
+        result = handler(request, **valid_params)
 
         # 5. 构造响应
         if isinstance(result, dict):
@@ -226,12 +291,11 @@ def handle_request(raw_data, client_addr):
         response.json({"code": 500, "msg": error_msg}, 500)
         return response.build()
 
-# ===================== 修复后的HTTPServer请求处理器（核心修改） =====================
+# ===================== 基于HTTPServer的请求处理器（新增核心） =====================
 class HTTPServerRequestHandler(BaseHTTPRequestHandler):
     """
     自定义HTTPServer请求处理器
     桥接HTTPServer和原有handle_request逻辑，无侵入式适配
-    修复：删除未定义方法调用 + 移除重复do_OPTIONS + 复用原有跨域逻辑
     """
     def do_GET(self):
         """处理GET请求：复用原有handle_request"""
@@ -254,11 +318,11 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
         self._handle_all_methods()
 
     def do_OPTIONS(self):
-        """处理OPTIONS预检请求：复用原有handle_request（核心，无需单独设置头）"""
+        """处理OPTIONS请求：复用原有handle_request"""
         self._handle_all_methods()
 
     def _handle_all_methods(self):
-        """统一处理所有HTTP方法，桥接原有逻辑（完全不变）"""
+        """统一处理所有HTTP方法，桥接原有逻辑"""
         # 1. 构造原始请求数据（模拟原生socket的raw_data格式）
         # 拼接请求行
         request_line = f"{self.command} {self.path} HTTP/1.1\r\n"
@@ -270,7 +334,7 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
         # 拼接完整raw_data（与原有socket的raw_data格式完全一致）
         raw_data = (request_line + request_headers + "\r\n").encode("utf-8") + request_body
 
-        # 2. 调用原有请求处理逻辑，获取响应（原有跨域/OPTIONS逻辑已处理）
+        # 2. 调用原有请求处理逻辑，获取响应
         client_addr = self.client_address  # 客户端地址（ip, port）
         response = handle_request(raw_data, client_addr)
 
@@ -281,7 +345,7 @@ class HTTPServerRequestHandler(BaseHTTPRequestHandler):
         """重写日志方法：禁用HTTPServer默认控制台日志，统一使用项目logger"""
         pass
 
-# ===================== 启动HTTPServer服务（完全不变） =====================
+# ===================== 启动HTTPServer服务（替代原有socket启动） =====================
 def run_http_server(host, port):
     """
     启动基于Python原生HTTPServer的HTTP服务
@@ -290,6 +354,8 @@ def run_http_server(host, port):
     try:
         # 初始化HTTPServer：绑定地址 + 自定义请求处理器
         server = HTTPServer((host, port), HTTPServerRequestHandler)
+        # 允许端口复用（解决重启服务时端口占用问题）
+        # server.socket.setsockopt(server.socket.SOL_SOCKET, server.socket.SO_REUSEADDR, 1)
         # 输出启动日志
         logger.info(f"[Server] HTTPServer running on http://{host}:{port}")
         logger.info(f"[Server] Debug mode: {DEBUG}, Static dir: {STATIC_DIR}")

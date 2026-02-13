@@ -96,3 +96,25 @@ class ForeignKeyField(Field):
         if value is None:
             return None
         return self.to.get(**{self.to._meta["primary_key"]: value})
+class UUIDField(Field):
+    """UUID字段"""
+    def __init__(self, auto_create=False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.auto_create = auto_create
+        if auto_create:
+            self.default = lambda: str(uuid.uuid4())
+
+    def _to_db(self, value):
+        if value is None and self.auto_create:
+            return str(uuid.uuid4())
+        if isinstance(value, uuid.UUID):
+            return str(value)
+        return str(value)
+
+    def _from_db(self, value):
+        if value is None:
+            return None
+        try:
+            return uuid.UUID(value)
+        except ValueError:
+            return value  # 如果转换失败，返回原始值

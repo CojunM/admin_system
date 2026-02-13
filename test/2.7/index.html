@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VueSolid 极简终极版</title>
+    <style>
+        #app {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+
+        button {
+            margin: 0 8px;
+            padding: 6px 14px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #f0f0f0;
+            border-color: #ccc;
+        }
+
+        input {
+            padding: 6px 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 120px;
+        }
+
+        .red {
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .blue {
+            color: #3182ce;
+            font-weight: bold;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        p {
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin: 0 0 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="./vue-solid-full.js"></script>
+    <script>
+        const { createApp, defineComponent, ref, computed, watch } = VueSolid;
+
+        // 子组件
+        const CounterItem = defineComponent({
+            template: `
+        <div class="card">
+          <h3 v-bind:class="textColor.value">{{label}}</h3>
+          <p>当前值：{{value}}</p>
+          <p>双倍值：{{doubleValue.value}}</p>
+        </div>
+      `,
+            setup(props) {
+                const textColor = ref('blue');
+                const doubleValue = computed(() => {
+                    const num = Number(props.value) || 0;
+                    return num * 2;
+                });
+
+                watch(ref({ _isRef: true, value: props.value }), (newVal) => {
+                    console.log('子组件值更新:', newVal);
+                    textColor.value = newVal > 5 ? 'red' : 'blue';
+                });
+
+                return {
+                    props, // 必须返回props供模板使用
+                    textColor,
+                    doubleValue,
+                    label: props.label
+                };
+            }
+        });
+
+        // 根组件
+        const App = defineComponent({
+            template: `
+        <div>
+          <h1 v-if="showTitle.value">VueSolid 完整版 ✅</h1>
+          
+          <div class="control-group">
+            <input v-model="count" type="number" placeholder="输入数字">
+            <button @click="add">+1</button>
+            <button @click="minus">-1</button>
+            <button @click="toggleTitle">切换标题</button>
+          </div>
+
+          <p>根组件计数：{{count.value}}</p>
+          <p>十倍计数（computed）：{{tenfoldCount.value}}</p>
+
+          <div is-component="CounterItem" label="子组件计数展示" value="count.value"></div>
+        </div>
+      `,
+            setup() {
+                // 核心：ref必须正确初始化
+                const count = ref(0);
+                const showTitle = ref(true);
+                const tenfoldCount = computed(() => count.value * 10);
+
+                // 监听count变化
+                watch(count, (newVal, oldVal) => {
+                    console.log('根组件计数更新:', newVal, '（旧值：', oldVal, '）');
+                });
+
+                // 方法：直接操作ref.value
+                const add = () => count.value += 1;
+                const minus = () => count.value -= 1;
+                const toggleTitle = () => showTitle.value = !showTitle.value;
+
+                // 必须返回所有需要在模板中使用的变量
+                return {
+                    count,
+                    showTitle,
+                    tenfoldCount,
+                    add,
+                    minus,
+                    toggleTitle
+                };
+            }
+        });
+
+        // 挂载应用
+        createApp(App)
+            .component('CounterItem', CounterItem)
+            .mount('#app');
+    </script>
+</body>
+
+</html>

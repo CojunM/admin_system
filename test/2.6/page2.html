@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>页面2 - VueSolid 示例</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #165DFF;
+            color: white;
+        }
+
+        .list-item {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <!-- 引入核心库（复用同一个文件） -->
+    <script src="./mini-vue-solid.js"></script>
+    <script>
+        // 业务代码（独立于核心库）
+        const { createApp, createSignal, toast } = VueSolid;
+
+        createApp({
+            setup() {
+                // 列表数据
+                const [list, setList] = createSignal([
+                    { id: 1, text: 'Vue3 模板语法', color: '#165DFF' },
+                    { id: 2, text: 'Solid.js 响应式', color: '#42b983' }
+                ]);
+
+                // 方法
+                const addItem = () => {
+                    const newItem = {
+                        id: Date.now(),
+                        text: `新项 ${list().length + 1}`,
+                        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`
+                    };
+                    setList(prev => [...prev, newItem]);
+                    toast('新增列表项！');
+                };
+
+                const removeLast = () => {
+                    if (list().length === 0) return;
+                    setList(prev => prev.slice(0, -1));
+                    toast('删除最后一项！');
+                };
+
+                return {
+                    list,
+                    addItem,
+                    removeLast
+                };
+            },
+            template: `
+                <div class="container">
+                    <h2>页面2 - 列表功能</h2>
+                    
+                    <button class="btn btn-primary" @click="addItem">新增项</button>
+                    <button class="btn btn-primary" @click="removeLast">删除最后一项</button>
+                    
+                    <div>
+                        <div v-for="item, index in list" :key="item.id" class="list-item" :style="{ color: item.color, fontSize: '14px' }">
+                            {{ index + 1 }}. {{ item.text }}
+                        </div>
+                    </div>
+                </div>
+            `
+        }).mount('#app');
+    </script>
+</body>
+
+</html>

@@ -3,17 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>终极边界值测试</title>
+    <title>兼容版-组件嵌套与Props传参</title>
     <style>
-        body {
-            padding: 30px;
+        .box {
+            margin: 10px;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 6px;
         }
 
-        .card {
-            padding: 20px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            width: 380px;
+        .root {
+            background: #f8f9fa;
+        }
+
+        .child {
+            background: #fff;
+        }
+
+        .grandson {
+            background: #f1f1f1;
         }
     </style>
 </head>
@@ -23,33 +31,34 @@
     <script src="./mini-solid-vue.js"></script>
     <script>
         const { defineComponent, renderComponent, createSignal } = MiniSolidVue;
-        defineComponent('AllBoundary', {
+
+        // 根组件：承载所有层级结构，使用原生DOM实现嵌套
+        defineComponent('Root', {
             setup() {
+                // 定义跨层级传递的数据
+                const [rootText] = createSignal('跨层级传递的数据');
+                const [childTitle] = createSignal('子组件标题');
                 return {
-                    nullVal: () => null,
-                    undefVal: () => undefined,
-                    trueVal: () => true,
-                    falseVal: () => false,
-                    zero: () => 0,
-                    emptyStr: () => '',
-                    nanVal: () => NaN,
-                    infinityVal: () => Infinity
+                    rootText,
+                    childTitle
                 };
             },
+            // 全部使用原生HTML标签，替代不支持的自定义组件标签
             template: `
-        <div class="card">
-          <p>null：{{ nullVal() }}</p>
-          <p>undefined：{{ undefVal() }}</p>
-          <p>true：{{ trueVal() }}</p>
-          <p>false：{{ falseVal() }}</p>
-          <p>数字0：{{ zero() }}</p>
-          <p>空字符串：{{ emptyStr() }}</p>
-          <p>NaN：{{ nanVal() }}</p>
-          <p>Infinity：{{ infinityVal() }}</p>
+        <div class="box root">
+          <div>根组件</div>
+          <!-- 子组件层级 -->
+          <div class="box child">
+            <div>子组件：{{ childTitle() }}</div>
+            <!-- 孙子组件层级 -->
+            <div class="box grandson">孙子组件：{{ rootText() }}</div>
+          </div>
         </div>
       `
-        });
-        renderComponent('AllBoundary', {}, document.getElementById('app'));
+        })
+
+        // 渲染根组件
+        renderComponent('Root', {}, document.getElementById('app'))
     </script>
 </body>
 

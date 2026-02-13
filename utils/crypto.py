@@ -13,7 +13,7 @@ HASH_ALGORITHM = 'sha256'  # 哈希算法（sha256/sha512，推荐sha256）
 ITERATIONS = 100000  # 哈希迭代次数（次数越高越安全，耗时也越长，10万次兼顾安全和性能）
 
 
-def encrypt_pwd(plain_password: str) -> str:
+def encrypt_password(plain_password: str) -> str:
     """
     加密明文密码：生成随机盐值 + 加盐哈希，返回「盐值:哈希值」拼接的字符串
     :param plain_password: 明文密码
@@ -36,7 +36,7 @@ def encrypt_pwd(plain_password: str) -> str:
     return f"{salt}:{hashed_password}"
 
 
-def verify_pwd(plain_password: str, encrypted_password: str) -> bool:
+def verify_password(plain_password: str, encrypted_password: str) -> bool:
     """
     验证明文密码是否匹配加密密码
     :param plain_password: 待验证的明文密码
@@ -65,7 +65,8 @@ def verify_pwd(plain_password: str, encrypted_password: str) -> bool:
 
 # 测试代码（运行该文件可验证加密/验证逻辑）
 if __name__ == "__main__":
-    test_pwd = "Admin@123"
+    # test_pwd = "Admin@123"
+    test_pwd ='123456'
     encrypted = encrypt_password(test_pwd)
     print(f"明文密码：{test_pwd}")
     print(f"加密后：{encrypted}")

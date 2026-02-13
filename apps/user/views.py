@@ -4,7 +4,7 @@ import time
 from utils.jwt_tool import jwt_encode, jwt_decode
 from core.router import post, get, put, delete
 from config.settings import SECRET_KEY  # 保留，作为JWT签名密钥
-from utils.crypto import encrypt_pwd, verify_pwd
+from utils.crypto import encrypt_password, verify_password
 from utils.logger import logger
 from apps.user.models import User
 from apps.role.models import Role
@@ -12,51 +12,74 @@ from apps.role.models import Role
 # JWT过期时间（24小时），保留原有配置
 JWT_EXPIRE = 86400
 
+# ... existing code ...
+
 @post("/api/user/login")
 def user_login(request):
     """用户登录接口：仅替换jwt.encode为自定义jwt_encode，其余不变"""
-    username = request.body.get("username")
-    password = request.body.get("password")
-    if not username or not password:
-        return 400, {"msg": "用户名和密码不能为空"}
-    
-    # 查询用户（原有逻辑完全不变）
-    user = User.get(username=username)
-    if not user:
-        return 401, {"msg": "用户名或密码错误"}
-    if user.status == 0:
-        return 401, {"msg": "用户已被禁用"}
-    
-    # 验证密码（原有逻辑完全不变）
-    if not verify_pwd(password, user.password):
-        logger.warning(f"[User] Login failed, wrong password for {username}")
-        return 401, {"msg": "用户名或密码错误"}
-    
-    # 更新最后登录时间（原有逻辑完全不变）
-    user.last_login_time = time.strftime("%Y-%m-%d %H:%M:%S")
-    user.save()
-    
-    # 生成JWT Token：替换原有jwt.encode为自定义jwt_encode，参数完全一致
-    payload = {
-        "user_id": user.id,
-        "username": user.username,
-        "exp": time.time() + JWT_EXPIRE
-    }
-    # 核心替换：jwt.encode → jwt_encode（自定义方法）
-    token = jwt_encode(payload, SECRET_KEY, algorithm="HS256")
-    
-    # 返回用户信息（脱敏，原有逻辑完全不变）
-    user_info = user.to_dict(desensitize_fields=["phone", "email"])
-    del user_info["password"]
-    user_info["role"] = Role.get(id=user.role_id).name
-    
-    logger.info(f"[User] {username} login success from {request.client_addr}")
-    return {
-        "token": token,
-        "user": user_info
-    }
+    try:
+        username = request.body.get("username")
+        password = request.body.get("password")
+        
+        if not username or not password:
+            logger.warning(f"[User] Login attempt with missing credentials from {request.client_addr}")
+            return 400, {"msg": "用户名和密码不能为空"}
+        
+        # 查询用户（原有逻辑完全不变）
+        user = User.get(username="admin")
+        logger.info(f"用户名1 {user.username}")
+        if not user:
+            logger.warning(f"[User] Login failed, user not found: {username} from {request.client_addr}")
+            return 401, {"msg": "用户名或密码错误"}
+            
+        if user.status == 0:
+            logger.warning(f"[User] Login failed, user disabled: {username} from {request.client_addr}")
+            return 401, {"msg": "用户已被禁用"}
+        
+        # 验证密码（原有逻辑完全不变）
+        if not verify_password(password, user.password):
+            logger.warning(f"[User] Login failed, wrong password for {username} from {request.client_addr}")
+            return 401, {"msg": "用户名或密码错误"}
+        
+        # 更新最后登录时间（原有逻辑完全不变）
+        user.last_login_time = time.strftime("%Y-%m-%d %H:%M:%S")
+        user.save()
+        
+        # 生成JWT Token：替换原有jwt.encode为自定义jwt_encode，参数完全一致
+        payload = {
+            "user_id": user.id,
+            "username": user.username,
+            "exp": time.time() + JWT_EXPIRE
+        }
+        # 核心替换：jwt.encode → jwt_encode（自定义方法）
+        token = jwt_encode(payload, SECRET_KEY, algorithm="HS256")
+        print(token )
+        # 返回用户信息（脱敏，原有逻辑完全不变）
+        user_info = user.to_dict(exclude=["phone", "email"])
+       
+        del user_info["password"]
+        
+        # 获取角色信息
+        try:
+            # role = Role.get(id=user.role_id.id)
+            role =user.role_id
+            user_info["role"] = role.name if role else "未知角色"
+            print (role.name,'user_info:',user_info,'token:',token )
+        except Exception as e:
+            logger.error(f"[User] Failed to get role for user {user.id}: {str(e)}")
+            user_info["role"] = "未知角色"
+        
+        logger.info(f"[User] {username} login success from {request.client_addr}")
+        
+        return {
+            "token": token,
+            "user": user_info
+        }
+        
+    except Exception as e:
+        logger.error(f"[User] Login error: {str(e)}", exc_info=True)
+        return 500, {"msg": "服务器内部错误"}
 
-# 以下所有接口：完全保留原有逻辑，无需任何修改 ==============================
 @get("/api/user/info")
 def user_info(request):
     """获取当前用户信息：原有逻辑完全不变"""
@@ -81,7 +104,7 @@ def user_add(request):
     if User.get(username=request.body.get("username")):
         return 400, {"msg": "用户名已存在"}
     
-    pwd = encrypt_pwd(request.body.get("password"))
+    pwd = encrypt_password(request.body.get("password"))
     
     user = User(
         username=request.body.get("username"),
@@ -141,7 +164,7 @@ def user_edit(request, user_id):
     if "status" in request.body:
         user.status = request.body.get("status")
     if "password" in request.body and request.body.get("password"):
-        user.password = encrypt_pwd(request.body.get("password"))
+        user.password = encrypt_password(request.body.get("password"))
     
     user.save()
     logger.info(f"[User] Edit user {user_id} by {request.user.get('username')}")
@@ -169,10 +192,10 @@ def change_pwd(request):
         return 400, {"msg": "原密码和新密码不能为空"}
     
     user = User.get(id=request.user.get("id"))
-    if not verify_pwd(old_pwd, user.password):
+    if not verify_password(old_pwd, user.password):
         return 400, {"msg": "原密码错误"}
     
-    user.password = encrypt_pwd(new_pwd)
+    user.password = encrypt_password(new_pwd)
     user.save()
     logger.info(f"[User] Change password for {user.username}")
     return {"msg": "密码修改成功"}

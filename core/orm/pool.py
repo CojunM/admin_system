@@ -8,14 +8,14 @@ import psycopg2
 from psycopg2 import pool
 from config.settings import  POOL_MIN_CONN, POOL_MAX_CONN, POOL_IDLE_TIMEOUT
 
-
+DATABASE_URL = 
 # 全局连接池实例
 db_pool = None
 # 记录每个连接的最后使用时间（key: 连接对象, value: 最后使用时间戳）
 conn_last_used = {}
 # 空闲连接检查间隔（设为超时时间的1/5，避免频繁检查）
 CHECK_INTERVAL = max(1, POOL_IDLE_TIMEOUT // 5)
-
+class DatabaseError(Exception)  :pass
 def get_db_pool():
     """初始化数据库连接池"""
     global db_pool

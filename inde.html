@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>列表页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #app {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #42b983;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f5f5f5;
+            border-radius: 6px;
+        }
+
+        h3 {
+            margin-bottom: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">页面加载中...</div>
+
+    <script>
+        ((window) => {
+            'use strict';
+            console.log('📦 框架核心加载成功');
+            const effectStack = [];
+            let activeEffect = null;
+
+            // 响应式核心
+            function createSignal(initialValue) {
+                const subscribers = new Set();
+                const get = () => {
+                    if (activeEffect) subscribers.add(activeEffect);
+                    return initialValue;
+                };
+                const set = (newValue) => {
+                    try {
+                        const value = typeof newValue === 'function' ? newValue(initialValue) : newValue;
+                        if (Object.is(initialValue, value)) return;
+                        initialValue = value;
+                        subscribers.forEach(eff => { try { eff() } catch { } });
+                    } catch (e) {
+                        console.warn('信号更新失败', e);
+                    }
+                };
+                return [get, set];
+            }
+
+            function createEffect(fn) {
+                try {
+                    const effect = () => {
+                        effectStack.push(effect);
+                        activeEffect = effect;
+                        try { fn() } finally {
+                            effectStack.pop();
+                            activeEffect = effectStack.at(-1) || null;
+                        }
+                    };
+                    effect();
+                } catch (e) {
+                    console.warn('副作用执行失败', e);
+                }
+            }
+
+            function createComputed(fn) {
+                const [value, setValue] = createSignal();
+                createEffect(() => setValue(fn()));
+                return value;
+            }
+
+            // 工具函数
+            const Utils = {
+                parseVFor(str) {
+                    const reg = /^\s*([$\w]+)(?:\s*,\s*([$\w]+))?\s+in\s+([$\w]+)\s*$/;
+                    const match = str.match(reg);
+                    if (!match) return null;
+                    return {
+                        itemKey: match[1],
+                        indexKey: match[2] || '$index',
+                        listKey: match[3]
+                    };
+                },
+                parseEvent(attr) {
+                    if (attr.startsWith('@')) return attr.slice(1);
+                    if (attr.startsWith('v-on:')) return attr.slice(5);
+                    return null;
+                },
+                evalExpr(expr, ctx = {}) {
+                    try {
+                        const keys = Object.keys(ctx);
+                        const values = Object.values(ctx);
+                        const res = new Function(...keys, `return ${expr.trim()}`)(...values);
+                        return res ?? '';
+                    } catch (err) {
+                        console.debug('表达式解析失败:', expr, err);
+                        return '';
+                    }
+                },
+                clone(el) {
+                    return el?.cloneNode(true) || null;
+                }
+            };
+
+            // 编译器
+            const Compiler = {
+                renderText(node, ctx) {
+                    if (node.nodeType !== Node.TEXT_NODE) return;
+                    const content = node.textContent;
+                    if (!content?.includes('{{')) return;
+                    node.textContent = content.replace(/{{\s*([\w\(\).\s]+?)\s*}}/g, (_, exp) => Utils.evalExpr(exp, ctx));
+                },
+                compile(el, ctx, watchers) {
+                    if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
+                    // 递归编译子节点
+                    Array.from(el.childNodes).forEach(node => {
+                        try {
+                            node.nodeType === Node.TEXT_NODE ? this.renderText(node, ctx) : this.compile(node, ctx, watchers);
+                        } catch { }
+                    });
+                    // 处理v-for指令
+                    const vForAttr = Array.from(el.attributes).find(a => a.name === 'v-for');
+                    if (vForAttr) {
+                        const parent = el.parentNode;
+                        const conf = Utils.parseVFor(vForAttr.value);
+                        if (!conf || !parent) return;
+
+                        const tpl = Utils.clone(el);
+                        tpl?.removeAttribute('v-for');
+                        el.remove();
+
+                        // 列表渲染函数
+                        const renderList = () => {
+                            try {
+                                parent.querySelectorAll('[data-item]').forEach(n => n.remove());
+
+                                // 核心修复：解析响应式getter函数，获取真实数组
+                                const rawData = Utils.evalExpr(conf.listKey, ctx);
+                                // 如果是函数，执行获取响应式值
+                                const data = typeof rawData === 'function' ? rawData() : rawData;
+                                // 强制转为数组，兼容空值/非数组场景
+                                const listData = Array.isArray(data) ? data : [];
+
+                                // 循环渲染
+                                listData.forEach((item, index) => {
+                                    const node = Utils.clone(tpl);
+                                    if (!node) return;
+                                    node.setAttribute('data-item', '');
+                                    // 注入循环变量
+                                    const childCtx = { ...ctx, [conf.itemKey]: item, [conf.indexKey]: index };
+                                    this.compile(node, childCtx, watchers);
+                                    Array.from(node.childNodes).forEach(n => this.renderText(n, childCtx));
+                                    parent.appendChild(node);
+                                });
+                            } catch (err) {
+                                console.error('列表渲染失败:', err);
+                            }
+                        };
+
+                        watchers.push(renderList);
+                        // 初始化渲染
+                        renderList();
+                        return;
+                    }
+                    // 绑定事件
+                    Array.from(el.attributes).forEach(attr => {
+                        try {
+                            const eventName = Utils.parseEvent(attr.name);
+                            if (!eventName) return;
+                            el.removeAttribute(attr.name);
+                            el.addEventListener(eventName, () => Utils.evalExpr(attr.value, ctx));
+                        } catch { }
+                    });
+                },
+                mount(template, ctx, container) {
+                    try {
+                        if (!container || !template) throw new Error('挂载参数异常');
+                        const wrapper = document.createElement('div');
+                        wrapper.innerHTML = template.trim();
+                        const root = wrapper.firstElementChild;
+                        if (!root) throw new Error('模板无有效根节点');
+
+                        const watchers = [];
+                        this.compile(root, ctx, watchers);
+                        container.appendChild(root);
+
+                        // 响应式更新
+                        createEffect(() => watchers.forEach(fn => { try { fn() } catch { } }));
+                        console.log('✅ 页面渲染完成');
+                    } catch (e) {
+                        console.error('❌ 挂载失败：', e);
+                        container.innerHTML = `<div style="padding:20px;color:red">页面渲染异常：${e.message}</div>`;
+                    }
+                }
+            };
+
+            // 组件API
+            const MV = {
+                createSignal,
+                createEffect,
+                createComputed,
+                defineComponent(options) {
+                    return {
+                        setup: options.setup || (() => ({})),
+                        template: (options.template || '').trim()
+                    };
+                },
+                createApp(component) {
+                    return {
+                        mount(selector) {
+                            const container = document.querySelector(selector);
+                            if (!container) {
+                                console.error(`❌ 未找到容器：${selector}`);
+                                return;
+                            }
+                            const ctx = component.setup();
+                            Compiler.mount(component.template, ctx, container);
+                        }
+                    };
+                }
+            };
+            window.MVSolidVue = MV;
+        })(window);
+    </script>
+
+    <!-- 业务代码 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const { defineComponent, createApp, createSignal, createComputed } = MVSolidVue;
+
+                const App = defineComponent({
+                    setup() {
+                        // 响应式列表
+                        const [list, setList] = createSignal([
+                            { id: 1, name: 'Vue3 模板编译' },
+                            { id: 2, name: 'Solid 响应式' },
+                            { id: 3, name: '框架整合' }
+                        ]);
+                        // 计算总数
+                        const total = createComputed(() => list().length);
+                        // 新增方法
+                        const addItem = () => {
+                            setList(prev => [...prev, {
+                                id: Date.now(),
+                                name: `新条目-${String(Date.now()).slice(-4)}`
+                            }]);
+                        };
+                        return { list, total, addItem };
+                    },
+                    template: `
+            <div>
+              <button class="btn" @click="addItem">新增列表条目</button>
+              <h3>总数据：{{ total() }} 条</h3>
+              <div v-for="item, index in list" class="item">
+                索引：{{ index }} | 名称：{{ item.name }} | ID：{{ item.id }}
+              </div>
+            </div>
+          `
+                });
+                createApp(App).mount('#app');
+            } catch (e) {
+                console.error('业务代码异常：', e);
+                document.getElementById('app').innerHTML = `<div style="color:red">业务逻辑异常：${e.message}</div>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

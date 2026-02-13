@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 from core.orm.pool import get_db_pool
-# from config.settings import POOL_INSTANCE_NAME
+from config.settings import POOL_INSTANCE_NAME
 from utils.logger import logger
 
 class Field:
@@ -111,7 +111,7 @@ class Model(metaclass=ModelMeta):
     @classmethod
     def _get_cursor(cls):
         """获取数据库游标（从连接池）"""
-        pool = get_db_pool(POOL_INSTANCE_NAME)
+        pool = get_db_pool()
         conn = pool.get_connection()
         cursor = conn.cursor()
         return conn, cursor

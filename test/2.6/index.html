@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>扩展功能测试</title>
+    <style>
+        .active {
+            background: #165DFF;
+            color: white;
+            padding: 10px;
+        }
+
+        .text-lg {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="./mini-solid-vue.js"></script>
+    <script>
+        const { createApp, ref, reactive, computed, watch, nextTick } = Vue;
+
+        createApp({
+            props: {
+                title: { type: String, default: '扩展功能测试' }
+            },
+            filters: {
+                uppercase: (val) => val.toUpperCase()
+            },
+            setup(props, { onMounted, onUpdated }) {
+                // 1. 响应式扩展（修正：checkbox v-model 绑定数组更合理）
+                const count = ref(0);
+                const checkedList = ref([]); // 新增：用于checkbox的v-model
+                const user = reactive({ name: '张三', age: 18 });
+                const doubleCount = computed(() => count.value * 2);
+
+                // 2. 监听功能（修正：移除非法箭头符号 → 改为合法的 ->）
+                watch(count, (newVal, oldVal) => {
+                    console.log('count变化：', oldVal + ' -> ' + newVal);
+                }, { immediate: true });
+
+                // 3. 生命周期
+                onMounted(() => {
+                    console.log('组件挂载完成');
+                    Vue.utils.toast('挂载成功！');
+                });
+                onUpdated(() => {
+                    console.log('组件更新完成');
+                });
+
+                // 4. 方法
+                const increment = () => count.value++;
+                const changeName = () => user.name = '李四';
+
+                return {
+                    count, user, doubleCount, checkedList,
+                    increment, changeName
+                };
+            },
+            template: `
+                <div>
+                    <!-- 修正：过滤器语法正确，无非法符号 -->
+                    <h3>{{ title | uppercase }}</h3>
+                    
+                    <!-- v-if/v-else（语法修正：无多余空格/符号） -->
+                    <div v-if="count > 0">计数：{{ count }}（双倍：{{ doubleCount }}）</div>
+                    <div v-else>计数为0</div>
+                    
+                    <!-- 复杂:class（语法正确） -->
+                    <div :class="['text-lg', { active: count > 0 }]">
+                        用户名：{{ user.name }}（年龄：{{ user.age }}）
+                    </div>
+                    
+                    <!-- 复杂:style（语法正确：驼峰属性合法） -->
+                    <div :style="{ fontSize: count > 0 ? '20px' : '16px', color: '#165DFF' }">
+                        样式随计数变化
+                    </div>
+                    
+                    <!-- 修正：checkbox的v-model绑定数组（匹配Vue3规范） -->
+                    <input v-model="checkedList" type="checkbox" value="选项1" /> 选项1
+                    <input v-model="checkedList" type="checkbox" value="选项2" /> 选项2
+                    <p>已选：{{ checkedList.join(', ') }}</p>
+                    
+                    <!-- 事件修饰符（语法正确） -->
+                    <button @click.stop="increment">计数+1（阻止冒泡）</button>
+                    <button @click.prevent="changeName">修改名称（阻止默认）</button>
+                </div>
+            `
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
