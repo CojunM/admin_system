@@ -8,7 +8,7 @@ import time
 # 导入自定义JWT工具（替换原有jwt库）
 from utils.jwt_tool import jwt_decode
 from config.settings import SECRET_KEY
-
+from utils.logger import logger
 def auth_middleware(request, response):
     """
     权限认证中间件：从Header获取Token，解析验证后挂载用户信息到request.user
@@ -45,11 +45,14 @@ def auth_middleware(request, response):
     # 可选：补充管理员标识（原有逻辑不变）
     from apps.role.models import Role
     from apps.user.models import User
+   
+    # Role.migrate_table()
     user = User.get(id=payload.get("user_id"))
     if user:
         role = Role.get(id=user.role_id)
         request.user["is_admin"] = role.is_admin == 1 if role else False
-    
+    else:
+        logger.error(f"[Auth] User not found: {payload.get('user_id')}")
     return None
 
 # 其他中间件（限流/CSRF/脱敏等）：完全保留，无需修改

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-完整版 Peewee 风格 ORM 框架（修复 SQLite autocommit 错误）
+完整版 Peewee 风格 ORM 框架（生产级可用）
 核心特性：
-1. 完整字段体系（StringField/DecimalField/UUIDField 等），对齐 Peewee API
-2. 支持 PostgreSQL/MySQL/SQLite 多数据库适配
-3. 内置连接池、事务管理、SQL 注入防护
-4. 支持索引、外键（on_delete/on_update）、表迁移
-5. 修复 SQLite autocommit 属性错误
+1. 完整字段体系（对齐 Peewee API）：Integer/BigInteger/Float/Decimal/String/Text/Binary/Date/Time/DateTime/Boolean/UUID/ForeignKey
+2. 多数据库适配：MySQL/PostgreSQL/SQLite（修复 SQLite autocommit 错误）
+3. 企业级特性：连接池、事务管理、字段注释、索引、外键反向引用、表迁移
+4. 安全防护：SQL 注入检测、字段/表名合法性校验、值转义
+5. 扩展功能：批量操作、查询排序/分页、字段验证
 """
 
 import re
@@ -83,6 +83,10 @@ class InvalidForeignKeyError(ModelError):
 
 class DataInsertError(ModelError):
     """数据插入异常"""
+    pass
+
+class FieldValidationError(ModelError):
+    """字段验证异常"""
     pass
 
 # ======================== 3. 数据库连接池 ========================
@@ -326,7 +330,7 @@ class MySQLAdapter(BaseDatabaseAdapter):
         "DecimalField": "DECIMAL", "StringField": "VARCHAR", "CharField": "VARCHAR",
         "TextField": "TEXT", "BinaryField": "BLOB", "DateField": "DATE",
         "TimeField": "TIME", "DateTimeField": "DATETIME", "BooleanField": "TINYINT",
-        "UUIDField": "CHAR", "ForeignKeyField": "INT"
+        "UUIDField": "CHAR", "ForeignKeyField": "INT", "EnumField": "ENUM"
     }
     AUTO_INCREMENT_SUFFIX = "AUTO_INCREMENT"
     IDENTIFIER_QUOTE = "`"
@@ -340,6 +344,8 @@ class MySQLAdapter(BaseDatabaseAdapter):
             return f"{base_type}({inst.max_digits}, {inst.decimal_places})"
         elif cls_name == "UUIDField":
             return f"{base_type}(36)"
+        elif cls_name == "EnumField":
+            return f"{base_type}({','.join([f"'{v}'" for v in inst.choices])})"
         elif cls_name == "IntegerField" and inst.primary_key and inst.auto_increment:
             return "INT"
         return base_type
@@ -393,7 +399,7 @@ class PostgreSQLAdapter(BaseDatabaseAdapter):
         "DecimalField": "NUMERIC", "StringField": "VARCHAR", "CharField": "VARCHAR",
         "TextField": "TEXT", "BinaryField": "BYTEA", "DateField": "DATE",
         "TimeField": "TIME", "DateTimeField": "TIMESTAMP", "BooleanField": "BOOLEAN",
-        "UUIDField": "UUID", "ForeignKeyField": "INTEGER"
+        "UUIDField": "UUID", "ForeignKeyField": "INTEGER", "EnumField": "VARCHAR"
     }
     AUTO_INCREMENT_SUFFIX = ""
     IDENTIFIER_QUOTE = "\""
@@ -405,6 +411,8 @@ class PostgreSQLAdapter(BaseDatabaseAdapter):
             return f"{base_type}({inst.max_length})"
         elif cls_name == "DecimalField":
             return f"{base_type}({inst.max_digits}, {inst.decimal_places})"
+        elif cls_name == "EnumField":
+            return f"{base_type}({inst.max_length})"
         elif cls_name == "IntegerField" and inst.primary_key and getattr(inst, 'auto_increment', False):
             return "INTEGER"
         return base_type
@@ -421,90 +429,27 @@ class PostgreSQLAdapter(BaseDatabaseAdapter):
         return f", FOREIGN KEY ({fk}) REFERENCES {t_tbl}({t_pk}) ON DELETE {inst.on_delete} ON UPDATE {inst.on_update}"
 
     def get_alter_add_field_sql(self, inst):
-        """
-        生成新增字段的 ALTER TABLE SQL（适配 PostgreSQL/MySQL/SQLite）
-        修复点：
-        1. 
-        2. 非空字段自动补充默认值（避免 PostgreSQL 空值报错）
-        3. 过滤空约束，避免 SQL 语法错误
-        4. 正确处理数据库函数默认值（如 CURRENT_TIMESTAMP 不加单引号）
-        """
         name = self.quote_identifier(inst.name)
         typ = self.get_field_type(inst.__class__.__name__, inst)
-        constraints = []
-        
-        # 1. 处理非空约束：无默认值时自动补充（解决 PostgreSQL 空值报错）
-        if not inst.nullable:
-            # 如果没有默认值，根据字段类型自动补充安全默认值
-            if inst.default is None:
-                if inst.__class__.__name__ in ["StringField", "CharField"]:
-                    inst.default = ""  # 字符串默认空串
-                elif inst.__class__.__name__ in ["IntegerField", "BigIntegerField"]:
-                    inst.default = 0   # 整型默认0
-                elif inst.__class__.__name__ == "BooleanField":
-                    inst.default = False  # 布尔默认False
-                elif inst.__class__.__name__ == "DateTimeField":
-                    inst.default = "CURRENT_TIMESTAMP"  # 时间字段默认当前时间
-            constraints.append("NOT NULL")
-        
-        # 2. 处理默认值（修复语法错误 + 兼容数据库函数）
+        constraints = ["NOT NULL"] if not inst.nullable else []
         if inst.default is not None:
             constraints.append(f"DEFAULT {inst._format_default(inst.default, self)}")
-        
-        # 3. 处理自增
         auto_inc = self.get_auto_increment_sql(inst)
         if auto_inc:
             constraints.append(auto_inc)
-        
-        # 4. 过滤空约束，避免生成多余空格
-        constraints_str = ' '.join([c for c in constraints if c])
-        
-        # 5. 拼接最终 SQL
-        return f"ADD COLUMN {name} {typ} {constraints_str}".strip()
+        return f"ADD COLUMN {name} {typ} {' '.join(constraints)}"
+
     def get_alter_modify_field_sql(self, inst):
-            """
-            生成修改字段的 SQL（修复 user_id 布尔判断错误）
-            核心：区分「状态字段（is_read）」和「普通整型字段（user_id）」的转换逻辑
-            """
-            name = self.quote_identifier(inst.name)
-            typ = self.get_field_type(inst.__class__.__name__, inst)
-            parts = []
-            
-            # 核心修复：根据字段名/用途选择不同的转换逻辑
-            if typ.upper() == "INTEGER":
-                # 场景1：状态类字段（is_read/is_deleted 等）→ 布尔转整数
-                if inst.name in ["is_read", "is_deleted", "is_active"]:
-                    using_clause = f"USING CASE " \
-                                f"WHEN {name} IS TRUE OR {name} = '1' OR {name} = 'true' THEN 1 " \
-                                f"WHEN {name} IS FALSE OR {name} = '0' OR {name} = 'false' THEN 0 " \
-                                f"ELSE 0 END"
-                # 场景2：普通整型字段（user_id/id 等）→ 直接转换（支持空值）
-                else:
-                    using_clause = f"USING {name}::integer"  # 无布尔判断，直接转整型
-            
-            elif typ.upper() == "BOOLEAN":
-                # 布尔类型转换（整数/字符串转布尔）
-                using_clause = f"USING CASE " \
-                            f"WHEN {name} = 1 OR {name} = '1' OR {name} = 'true' THEN TRUE " \
-                            f"ELSE FALSE END"
-            else:
-                # 其他类型默认转换
-                using_clause = f"USING {name}::{typ.lower()}"
-            
-            # 1. 修改字段类型（带适配的 USING 子句）
-            parts.append(f"ALTER COLUMN {name} TYPE {typ} {using_clause}")
-            
-            # 2. 设置/取消非空约束
-            if not inst.nullable:
-                parts.append(f"ALTER COLUMN {name} SET NOT NULL")
-            else:
-                parts.append(f"ALTER COLUMN {name} DROP NOT NULL")
-            
-            # 3. 设置默认值（如果有）
-            if inst.default is not None:
-                parts.append(f"ALTER COLUMN {name} SET DEFAULT {inst._format_default(inst.default, self)}")
-            
-            return ", ".join(parts)   
+        name = self.quote_identifier(inst.name)
+        typ = self.get_field_type(inst.__class__.__name__, inst)
+        parts = [
+            f"ALTER COLUMN {name} TYPE {typ}",
+            f"ALTER COLUMN {name} SET NOT NULL" if not inst.nullable else f"ALTER COLUMN {name} DROP NOT NULL"
+        ]
+        if inst.default is not None:
+            parts.append(f"ALTER COLUMN {name} SET DEFAULT {inst._format_default(inst.default, self)}")
+        return ", ".join(parts)
+
     def get_alter_drop_field_sql(self, name):
         quoted_name = self.quote_identifier(name)
         return f"DROP COLUMN {quoted_name}"
@@ -526,7 +471,7 @@ class SqliteAdapter(BaseDatabaseAdapter):
         "DecimalField": "REAL", "StringField": "TEXT", "CharField": "TEXT",
         "TextField": "TEXT", "BinaryField": "BLOB", "DateField": "TEXT",
         "TimeField": "TEXT", "DateTimeField": "DATETIME", "BooleanField": "INTEGER",
-        "UUIDField": "TEXT", "ForeignKeyField": "INTEGER"
+        "UUIDField": "TEXT", "ForeignKeyField": "INTEGER", "EnumField": "TEXT"
     }
     AUTO_INCREMENT_SUFFIX = "AUTOINCREMENT"
     IDENTIFIER_QUOTE = "\""
@@ -581,9 +526,9 @@ def get_database_adapter(db_type: str) -> BaseDatabaseAdapter:
         raise DatabaseError(f"不支持的数据库类型：{db_type}")
     return adapter_map[db_type]()
 
-# ======================== 5. 查询对象 ========================
+# ======================== 5. 查询对象（增强版） ========================
 class Query:
-    """查询对象"""
+    """查询对象（支持排序/分页/LIKE查询）"""
     def __init__(self, model_cls):
         self.model_cls = model_cls
         self.db = model_cls._get_database()
@@ -591,6 +536,9 @@ class Query:
         self.fields = list(model_cls._meta.fields.keys())
         self.where_conditions = []
         self.where_params = []
+        self.order_conditions = []
+        self.limit_count = None
+        self.offset_count = 0
         self._executed = False
         self._results = None
 
@@ -613,19 +561,63 @@ class Query:
             self.where_params.append(cleaned_value)
         return self
 
+    def like(self, **conditions) -> "Query":
+        """添加 LIKE 条件"""
+        validate_model_fields(self.model_cls, list(conditions.keys()))
+        for field_name, value in conditions.items():
+            validate_identifier(field_name)
+            field = self.model_cls._meta.fields[field_name]
+            if isinstance(value, str) and detect_sql_injection(value):
+                raise SQLSafetyError(f"检测到SQL注入特征：字段{field_name}的值[{value}]包含危险字符/语句")
+            cleaned_value = escape_value(f"%{value}%", field.python_type, self.model_cls)
+            self.where_conditions.append(f"{self.adapter.quote_identifier(field_name)} LIKE {self.adapter.PARAM_PLACEHOLDER}")
+            self.where_params.append(cleaned_value)
+        return self
+
+    def order_by(self, *fields, desc: bool = False) -> "Query":
+        """添加排序条件"""
+        validate_model_fields(self.model_cls, list(fields))
+        order_dir = "DESC" if desc else "ASC"
+        self.order_conditions = [f"{self.adapter.quote_identifier(f)} {order_dir}" for f in fields]
+        return self
+
+    def limit(self, limit: int, offset: int = 0) -> "Query":
+        """添加分页条件"""
+        if limit < 0:
+            raise ValueError("Limit 必须是非负整数")
+        if offset < 0:
+            raise ValueError("Offset 必须是非负整数")
+        self.limit_count = limit
+        self.offset_count = offset
+        return self
+
     def _build_sql(self) -> str:
-        """构建查询 SQL"""
+        """构建查询 SQL（支持排序/分页）"""
         fields_str = ", ".join([self.adapter.quote_identifier(f) for f in self.fields])
         table_name = self.adapter.quote_identifier(self.model_cls._meta.table_name)
+        
+        # WHERE 子句
         where_clause = ""
         if self.where_conditions:
             where_clause = f"WHERE {' AND '.join(self.where_conditions)}"
-        sql = f"SELECT {fields_str} FROM {table_name} {where_clause}"
+        
+        # ORDER BY 子句
+        order_clause = ""
+        if self.order_conditions:
+            order_clause = f"ORDER BY {', '.join(self.order_conditions)}"
+        
+        # LIMIT/OFFSET 子句
+        limit_clause = ""
+        if self.limit_count is not None and self.limit_count >= 0:
+            limit_clause = f"LIMIT {self.limit_count}"
+            if self.offset_count > 0:
+                limit_clause += f" OFFSET {self.offset_count}"
+        
+        sql = f"SELECT {fields_str} FROM {table_name} {where_clause} {order_clause} {limit_clause}"
         return self.adapter.convert_placeholder(sql)
 
     def execute(self) -> List:
         """执行查询"""
-        
         if self._executed:
             return self._results
         try:
@@ -657,38 +649,34 @@ class Query:
         """结果数量"""
         return len(self.execute())
 
-# ======================== 6. 字段定义（对齐 Peewee 完整版） ========================
+# ======================== 6. 字段定义（完整版，含枚举字段） ========================
 class Field:
-    """字段基类（对齐 Peewee Field 接口）"""
+    """字段基类（对齐 Peewee Field 接口，增强验证）"""
     python_type = str  # 默认 Python 类型
     field_type = None  # 数据库字段类型标识
     
     def __init__(self, primary_key: bool = False, nullable: bool = False, 
-                 default: Any = None, unique: bool = False, index: bool = False,comment: str = ""):
+                 default: Any = None, unique: bool = False, index: bool = False,
+                 comment: str = "", validate_hook: Callable = None):
         self.primary_key = primary_key
         self.nullable = nullable
         self.default = default
         self.unique = unique
         self.comment = comment.strip()  # 字段注释，去除首尾空格
-        self.index = index  # 新增：索引（Peewee 核心参数）
+        self.index = index  # 索引（Peewee 核心参数）
+        self.validate_hook = validate_hook  # 自定义验证钩子
         self.name = None    # 字段名（由元类自动赋值）
         self.model = None   # 所属模型（由元类自动赋值）
 
     def _format_default(self, value, adapter: BaseDatabaseAdapter = None) -> Any:
-        """格式化默认值（适配不同数据库，修复 PostgreSQL CURRENT_TIMESTAMP 语法）"""
+        """格式化默认值（适配不同数据库）"""
         if value is None:
             return "NULL"
         if callable(value):
             value = value()
-        
-        # 核心修复：跳过数据库函数的单引号包裹
-        db_functions = {"CURRENT_TIMESTAMP", "NOW()", "CURRENT_DATE", "CURRENT_TIME"}
-        if isinstance(value, str) and value in db_functions:
-            return value  # 直接返回函数名，不加单引号
-        
         if isinstance(value, str):
             escaped_value = value.replace("'", "''")
-            return f"'{escaped_value}'"  # 普通字符串仍加单引号
+            return f"'{escaped_value}'"  # 转义单引号
         elif isinstance(value, datetime.datetime):
             return f"'{value.strftime('%Y-%m-%d %H:%M:%S')}'"
         elif isinstance(value, datetime.date):
@@ -700,8 +688,27 @@ class Field:
         elif isinstance(value, (int, float, decimal.Decimal)):
             return str(value)
         return str(value)
+
+    def validate(self, value):
+        """字段验证（核心增强）"""
+        # 非空验证
+        if not self.nullable and value is None:
+            raise FieldValidationError(f"字段 {self.name} 不能为空")
+        # 类型验证
+        if value is not None and not isinstance(value, self.python_type):
+            try:
+                value = self.python_type(value)
+            except (ValueError, TypeError):
+                raise FieldValidationError(
+                    f"字段 {self.name} 类型错误，期望 {self.python_type.__name__}，实际 {type(value).__name__}"
+                )
+        # 自定义验证钩子
+        if self.validate_hook:
+            self.validate_hook(value)
+        return value
+
     def get_sql_definition(self, adapter: BaseDatabaseAdapter) -> str:
-        """获取字段 SQL 定义（包含索引/唯一约束）"""
+        """获取字段 SQL 定义（包含索引/唯一约束/注释）"""
         name = adapter.quote_identifier(self.name)
         field_type = adapter.get_field_type(self.__class__.__name__, self)
         auto_inc = adapter.get_auto_increment_sql(self)
@@ -722,24 +729,20 @@ class Field:
         # 默认值
         if self.default is not None:
             parts.append(f"DEFAULT {self._format_default(self.default, adapter)}")
-         # ========== 新增：字段注释（适配不同数据库语法） ==========
+        
+        # 字段注释（适配不同数据库语法）
+        comment_sql = ""
         if self.comment:
-            # 转义注释中的单引号
             escaped_comment = self.comment.replace("'", "''")
             adapter_cls = adapter.__class__.__name__
-            
             if adapter_cls == "MySQLAdapter":
-                # MySQL 注释语法：COMMENT '注释内容'
                 comment_sql = f" COMMENT '{escaped_comment}'"
             elif adapter_cls == "SqliteAdapter":
-                # SQLite 注释语法：-- 注释内容（放在字段定义后）
                 comment_sql = f" -- {escaped_comment}"
             elif adapter_cls == "PostgreSQLAdapter":
-                # PostgreSQL 注释语法：COMMENT '注释内容'
                 comment_sql = f" COMMENT '{escaped_comment}'"
-            sql = " ".join((parts,comment_sql))
-        else:
-            sql = " ".join(parts)
+        
+        sql = " ".join(parts) + comment_sql
         
         # 索引（单独返回，建表后创建）
         self.index_sql = None
@@ -755,8 +758,9 @@ class IntegerField(Field):
     field_type = 'int'
     
     def __init__(self, primary_key: bool = False, auto_increment: bool = False, 
-                 nullable: bool = False, default: Any = None, unique: bool = False, index: bool = False, comment: str = ""):
-        super().__init__(primary_key, nullable, default, unique, index, comment)
+                 nullable: bool = False, default: Any = None, unique: bool = False, 
+                 index: bool = False, comment: str = "", validate_hook: Callable = None):
+        super().__init__(primary_key, nullable, default, unique, index, comment, validate_hook)
         self.auto_increment = auto_increment or primary_key
 
 class BigIntegerField(Field):
@@ -776,8 +780,9 @@ class DecimalField(Field):
     
     def __init__(self, max_digits: int = 10, decimal_places: int = 2,
                  primary_key: bool = False, nullable: bool = False, 
-                 default: Any = None, unique: bool = False, index: bool = False, comment: str = ""):
-        super().__init__(primary_key, nullable, default, unique, index, comment)
+                 default: Any = None, unique: bool = False, index: bool = False,
+                 comment: str = "", validate_hook: Callable = None):
+        super().__init__(primary_key, nullable, default, unique, index, comment, validate_hook)
         self.max_digits = max_digits  # 总位数
         self.decimal_places = decimal_places  # 小数位数
 
@@ -788,9 +793,17 @@ class StringField(Field):
     field_type = 'varchar'
     
     def __init__(self, max_length: int = 255, primary_key: bool = False, 
-                 nullable: bool = False, default: Any = None, unique: bool = False, index: bool = False, comment: str = ""):
-        super().__init__(primary_key, nullable, default, unique, index, comment)
+                 nullable: bool = False, default: Any = None, unique: bool = False, 
+                 index: bool = False, comment: str = "", validate_hook: Callable = None):
+        super().__init__(primary_key, nullable, default, unique, index, comment, validate_hook)
         self.max_length = max_length
+        
+        # 长度验证钩子
+        def length_validate(value):
+            if len(value) > self.max_length:
+                raise FieldValidationError(f"字段 {self.name} 长度超过 {self.max_length} 字符限制")
+        if not self.validate_hook:
+            self.validate_hook = length_validate
 
 class CharField(StringField):
     """兼容旧代码的别名（原 CharField → StringField）"""
@@ -814,9 +827,9 @@ class DateField(Field):
     
     def __init__(self, auto_now: bool = False, auto_now_add: bool = False,
                  primary_key: bool = False, nullable: bool = False, 
-                 default: Any = None, unique: bool = False, index: bool = False, 
-                 comment: str = ""):
-        super().__init__(primary_key, nullable, default, unique, index, comment)
+                 default: Any = None, unique: bool = False, index: bool = False,
+                 comment: str = "", validate_hook: Callable = None):
+        super().__init__(primary_key, nullable, default, unique, index, comment, validate_hook)
         self.auto_now = auto_now
         self.auto_now_add = auto_now_add
         
@@ -830,11 +843,6 @@ class TimeField(Field):
     """时间字段（对齐 Peewee TimeField）"""
     python_type = datetime.time
     field_type = 'time'
-    
-    def __init__(self, primary_key: bool = False, nullable: bool = False, 
-                 default: Any = None, unique: bool = False, index: bool = False, 
-                 comment: str = ""):
-        super().__init__(primary_key, nullable, default, unique, index, comment)
 
 class DateTimeField(Field):
     """日期时间字段（对齐 Peewee DateTimeField）"""
@@ -843,9 +851,9 @@ class DateTimeField(Field):
     
     def __init__(self, auto_now: bool = False, auto_now_add: bool = False,
                  primary_key: bool = False, nullable: bool = False, 
-                 default: Any = None, unique: bool = False, index: bool = False, 
-                 comment: str = ""):
-        super().__init__(primary_key, nullable, default, unique, index, comment)
+                 default: Any = None, unique: bool = False, index: bool = False,
+                 comment: str = "", validate_hook: Callable = None):
+        super().__init__(primary_key, nullable, default, unique, index, comment, validate_hook)
         self.auto_now = auto_now
         self.auto_now_add = auto_now_add
         
@@ -854,6 +862,7 @@ class DateTimeField(Field):
         
         if self.auto_now_add and not callable(self.default):
             self.default = datetime.datetime.now
+
 # ------------------------ 其他字段 ------------------------
 class BooleanField(Field):
     """布尔字段（对齐 Peewee BooleanField）"""
@@ -866,9 +875,41 @@ class UUIDField(Field):
     field_type = 'uuid'
     
     def __init__(self, primary_key: bool = False, nullable: bool = False, 
-                 default: Any = None, unique: bool = True, index: bool = False, comment: str = ""):
+                 default: Any = None, unique: bool = True, index: bool = False,
+                 comment: str = "", validate_hook: Callable = None):
         # UUID 默认唯一
-        super().__init__(primary_key, nullable, default, unique or primary_key, index, comment)
+        super().__init__(primary_key, nullable, default, unique or primary_key, index, comment, validate_hook)
+        
+        # UUID 格式验证
+        def uuid_validate(value):
+            try:
+                uuid.UUID(value)
+            except ValueError:
+                raise FieldValidationError(f"字段 {self.name} 不是有效的 UUID 格式")
+        if not self.validate_hook:
+            self.validate_hook = uuid_validate
+
+class EnumField(Field):
+    """枚举字段（扩展 Peewee 特性）"""
+    python_type = str
+    field_type = 'enum'
+    
+    def __init__(self, choices: List[str], max_length: int = 255,
+                 primary_key: bool = False, nullable: bool = False, 
+                 default: Any = None, unique: bool = False, index: bool = False,
+                 comment: str = "", validate_hook: Callable = None):
+        super().__init__(primary_key, nullable, default, unique, index, comment, validate_hook)
+        self.choices = choices
+        self.max_length = max_length
+        
+        # 枚举值验证
+        def enum_validate(value):
+            if value not in self.choices:
+                raise FieldValidationError(f"字段 {self.name} 值 {value} 不在可选范围：{self.choices}")
+            if len(value) > self.max_length:
+                raise FieldValidationError(f"字段 {self.name} 长度超过 {self.max_length} 字符限制")
+        if not self.validate_hook:
+            self.validate_hook = enum_validate
 
 class ForeignKeyField(Field):
     """外键字段（对齐 Peewee ForeignKeyField）"""
@@ -877,8 +918,9 @@ class ForeignKeyField(Field):
     
     def __init__(self, to, backref: str = None, on_delete: str = "CASCADE", 
                  on_update: str = "CASCADE", nullable: bool = True, 
-                 unique: bool = False, index: bool = True, comment: str = ""):
-        super().__init__(nullable=nullable, unique=unique, index=index, comment =  comment)
+                 unique: bool = False, index: bool = True, comment: str = "",
+                 validate_hook: Callable = None):
+        super().__init__(nullable=nullable, unique=unique, index=index, comment=comment, validate_hook=validate_hook)
         self.to_model = to
         self.backref = backref
         # 对齐 Peewee：补充 on_update 策略
@@ -981,45 +1023,22 @@ class ModelMeta(type):
 
     @staticmethod
     def _setup_backref(model_cls, fields: Dict[str, Field]):
-        """设置反向引用（修复 ModelMeta 无 _meta 错误）"""
+        """设置反向引用"""
         for field in fields.values():
             if isinstance(field, ForeignKeyField) and field.backref:
                 target_model = field.to_model
                 related_model = model_cls
                 field_name = field.name
                 
-                # 核心修复1：定义安全的反向引用方法（增加类型校验）
+                # 定义反向引用方法
                 def get_related(self, rm=related_model, fn=field_name):
-                    # 校验 self 是否是真正的模型实例（有 _meta 属性）
-                    if not hasattr(self, '_meta'):
-                        logger.warning(f"反向引用失败：{self.__class__.__name__} 不是有效模型实例")
-                        return []
-                    # 校验关联模型是否有效
-                    if not hasattr(rm, '_meta'):
-                        logger.warning(f"反向引用失败：{rm.__name__} 模型未初始化完成")
-                        return []
-                    # 安全执行查询
-                    try:
-                        return rm.select().where(**{fn: getattr(self, self._meta.primary_key.name)}).execute()
-                    except Exception as e:
-                        logger.error(f"反向引用查询失败：{e}")
-                        return []
+                    return rm.select().where(**{fn: self.id}).execute()
                 
-                # 核心修复2：只对有 _meta 属性的模型类绑定反向引用
-                if hasattr(target_model, '_meta'):
-                    setattr(target_model, field.backref, get_related)
-                else:
-                    # 延迟绑定：给未初始化的模型类添加初始化后绑定的钩子
-                    def bind_backref_on_init(cls):
-                        if hasattr(cls, '_meta') and not hasattr(cls, field.backref):
-                            setattr(cls, field.backref, get_related)
-                    # 给目标模型类添加 __init_subclass__ 钩子
-                    if not hasattr(target_model, '__init_subclass__'):
-                        target_model.__init_subclass__ = classmethod(bind_backref_on_init)
-                    logger.warning(f"模型 {target_model.__name__} 未初始化完成，已添加反向引用延迟绑定钩子")
-# ======================== 8. 模型基类 ========================
+                setattr(target_model, field.backref, get_related)
+
+# ======================== 8. 模型基类（增强版，含批量操作） ========================
 class Model(metaclass=ModelMeta):
-    """模型基类（重构版）"""
+    """模型基类（重构版，增强验证/批量操作）"""
     def __init__(self,** kwargs):
         """初始化模型实例"""
         valid_fields = self._meta.fields.keys()
@@ -1044,6 +1063,7 @@ class Model(metaclass=ModelMeta):
         invalid_fields = [k for k in kwargs if k not in valid_fields]
         if invalid_fields:
             raise SQLSafetyError(f"无效字段：{', '.join(invalid_fields)}")
+    
     def to_dict(self, exclude=None):
         """
         模型转字典（所有模型自动可用）
@@ -1069,6 +1089,13 @@ class Model(metaclass=ModelMeta):
             else:
                 result[field_name] = value
         return result
+    
+    def validate(self):
+        """验证所有字段"""
+        for field_name, field in self._meta.fields.items():
+            value = getattr(self, field_name)
+            field.validate(value)
+    
     # ------------------------ 数据库绑定 ------------------------
     @classmethod
     def _get_database(cls):
@@ -1126,41 +1153,43 @@ class Model(metaclass=ModelMeta):
         db.close()
         logger.info(f"表 {cls._meta.table_name} 创建完成（含 {len(index_sql_list)} 个索引）")
 
-    
     @classmethod
     def migrate_table(cls, drop_absent: bool = False):
+        """迁移表（新增/修改/删除字段）"""
         if not cls._meta.primary_key:
             raise MissingPrimaryKeyError(f"模型{cls.__name__}必须定义主键字段")
+        
         db = cls._get_database()
         adapter = db.adapter
         table_name = cls._meta.table_name
+        
+        # 获取表元数据
         db_meta = db.get_table_metadata(table_name)
         model_fields = cls._meta.fields
         model_keys = set(model_fields.keys())
         db_keys = set(db_meta.keys())
+        
         migrate_commands = []
-
-        for field_name in model_keys & db_keys:
-            field = model_fields[field_name]
-            db_field = db_meta[field_name]
-            need_modify = cls._check_field_need_modify(field, db_field, adapter)
-            if need_modify:
-                # 简化版：直接生成修改 SQL（PostgreSQL 自动兼容 USING 子句）
-                modify_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_modify_field_sql(field)};"
-                if modify_sql.strip():
-                    migrate_commands.append(modify_sql)
-                    logger.info(f"待修改字段：{field_name} | SQL：{modify_sql}")                # 3. 重新设置默认值（如果有）
-                if field.default is not None and adapter.__class__.__name__ == "PostgreSQLAdapter":
-                    default_val = field._format_default(field.default, adapter)
-                    migrate_commands.append(f"ALTER TABLE {adapter.quote_identifier(table_name)} ALTER COLUMN {adapter.quote_identifier(field_name)} SET DEFAULT {default_val};")
-
-        # 原有新增/删除字段逻辑保持不变
+        
+        # 新增字段
         for field_name in model_keys - db_keys:
             field = model_fields[field_name]
             add_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_add_field_sql(field)};"
             migrate_commands.append(add_sql)
             logger.info(f"待新增字段：{field_name} | SQL：{add_sql}")
-
+        
+        # 修改字段
+        for field_name in model_keys & db_keys:
+            field = model_fields[field_name]
+            db_field = db_meta[field_name]
+            need_modify = cls._check_field_need_modify(field, db_field, adapter)
+            if need_modify:
+                modify_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_modify_field_sql(field)};"
+                if modify_sql.strip():
+                    migrate_commands.append(modify_sql)
+                    logger.info(f"待修改字段：{field_name} | SQL：{modify_sql}")
+        
+        # 删除字段
         if drop_absent:
             for field_name in db_keys - model_keys:
                 if field_name == cls._meta.primary_key.name:
@@ -1168,8 +1197,8 @@ class Model(metaclass=ModelMeta):
                 drop_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_drop_field_sql(field_name)};"
                 migrate_commands.append(drop_sql)
                 logger.info(f"待删除字段：{field_name} | SQL：{drop_sql}")
-
-        # 执行迁移命令
+        
+        # 执行迁移
         if migrate_commands:
             with db.transaction():
                 for idx, cmd in enumerate(migrate_commands):
@@ -1177,14 +1206,14 @@ class Model(metaclass=ModelMeta):
                         logger.info(f"执行迁移语句[{idx+1}/{len(migrate_commands)}]：{cmd}")
                         db.execute(cmd, close_after=True)
                     except Exception as e:
-                        # 忽略“无默认值可删除”的错误（PostgreSQL 特有）
-                        if "cannot drop default" not in str(e):
-                            logger.error(f"迁移语句执行失败：{cmd} | 错误：{e}")
-                            raise
-                logger.info(f"模型{cls.__name__}迁移完成，成功执行{len(migrate_commands)}条语句")
+                        logger.error(f"迁移语句执行失败：{cmd} | 错误：{e}")
+                        raise
+            logger.info(f"模型{cls.__name__}迁移完成，成功执行{len(migrate_commands)}条语句")
         else:
             logger.info(f"模型{cls.__name__}无字段变更，无需迁移")
-        return migrate_commands    
+        
+        return migrate_commands
+
     @classmethod
     def _check_field_need_modify(cls, field: Field, db_field: Dict, adapter: BaseDatabaseAdapter) -> bool:
         """检查字段是否需要修改（修复：跳过主键字段）"""
@@ -1215,7 +1244,10 @@ class Model(metaclass=ModelMeta):
 
     # ------------------------ 数据操作 ------------------------
     def save(self, close_after: bool = True) -> Any:
-        """保存模型实例（新增/更新）+ 支持事务内不关闭连接"""
+        """保存模型实例（新增/更新）+ 支持事务内不关闭连接 + 字段验证"""
+        # 字段验证
+        self.validate()
+        
         if not self._meta.primary_key:
             raise MissingPrimaryKeyError(f"模型{self.__class__.__name__}必须定义主键才能保存")
         
@@ -1290,6 +1322,57 @@ class Model(metaclass=ModelMeta):
         return return_id
 
     @classmethod
+    def bulk_create(cls, instances: List["Model"], batch_size: int = 100, close_after: bool = True) -> int:
+        """批量插入（增强功能）"""
+        if not instances:
+            return 0
+        
+        # 字段验证
+        for inst in instances:
+            inst.validate()
+        
+        db = cls._get_database()
+        adapter = db.adapter
+        
+        # 提取字段（排除自增主键）
+        pk_name = cls._meta.primary_key.name if cls._meta.primary_key else None
+        fields = [f for f in cls._meta.fields.keys() if not (f == pk_name and cls._meta.primary_key.auto_increment)]
+        
+        # 构建批量插入数据
+        values = []
+        for inst in instances:
+            row = []
+            for field_name in fields:
+                field = cls._meta.fields[field_name]
+                val = getattr(inst, field_name, field.default)
+                cleaned_val = escape_value(val, field.python_type, cls)
+                row.append(cleaned_val)
+            values.append(tuple(row))
+        
+        # 分批插入
+        total = 0
+        with db.transaction():
+            for i in range(0, len(values), batch_size):
+                batch = values[i:i+batch_size]
+                fields_str = ", ".join([adapter.quote_identifier(f) for f in fields])
+                placeholders = ", ".join([f"({', '.join([adapter.PARAM_PLACEHOLDER]*len(fields))})"]*len(batch))
+                table_name = adapter.quote_identifier(cls._meta.table_name)
+                
+                sql = f"INSERT INTO {table_name} ({fields_str}) VALUES {placeholders}"
+                sql = adapter.convert_placeholder(sql)
+                
+                # 展平参数
+                flat_params = tuple(sum(batch, ()))
+                count = db.execute(sql, flat_params, close_after=False)
+                total += count
+        
+        if close_after:
+            db.close()
+        
+        logger.info(f"批量插入 {cls.__name__} 成功，共 {total} 条记录")
+        return total
+
+    @classmethod
     def select(cls, *fields) -> Query:
         """构建查询对象"""
         query = Query(cls)
@@ -1361,46 +1444,7 @@ class Model(metaclass=ModelMeta):
 
         # 执行更新（核心修复：支持事务内不关闭连接）
         return db.execute(sql, tuple(set_params + where_params), close_after=close_after)
-    @classmethod
-    def filter(cls,** kwargs):
-        """兼容 Django ORM 的 filter 方法，支持 __in/__isnull 等语法"""
-        query = cls.select()
-        where_conditions = []
-        where_params = []
-        
-        for key, value in kwargs.items():
-            # 处理 __in 条件
-            if '__in' in key:
-                field_name = key.replace('__in', '')
-                # 验证字段是否存在
-                if field_name not in cls._meta.fields:
-                    raise ModelError(f"字段 {field_name} 不存在")
-                # 拼接 IN 条件
-                placeholders = ', '.join(['?'] * len(value))
-                where_conditions.append(f"{field_name} IN ({placeholders})")
-                where_params.extend(value)
-            # 处理 __isnull 条件
-            elif '__isnull' in key:
-                field_name = key.replace('__isnull', '')
-                if field_name not in cls._meta.fields:
-                    raise ModelError(f"字段 {field_name} 不存在")
-                if value:
-                    where_conditions.append(f"{field_name} IS NULL")
-                else:
-                    where_conditions.append(f"{field_name} IS NOT NULL")
-            # 普通相等条件
-            else:
-                if key not in cls._meta.fields:
-                    raise ModelError(f"字段 {key} 不存在")
-                where_conditions.append(f"{key} = ?")
-                where_params.append(value)
-        
-        # 应用条件
-        if where_conditions:
-            query.where_conditions = where_conditions
-            query.where_params = where_params
-        
-        return query.execute()
+
 # ======================== 9. 工具函数 ========================
 def detect_sql_injection(value: str) -> bool:
     """检测 SQL 注入（增强匹配规则）"""
@@ -1574,16 +1618,8 @@ class Database:
 
     def commit_transaction(self):
         """提交事务"""
-        if not self.conn:
-            logger.warning("无活跃连接，跳过事务提交")
-            return
         try:
             self.conn.commit()
-            # 恢复自动提交
-            if self.type == "sqlite":
-                self.conn.isolation_level = None
-            else:
-                self.conn.autocommit = True
         except Exception as e:
             raise TransactionError(f"提交事务失败：{e}")
         finally:
@@ -1591,327 +1627,150 @@ class Database:
 
     def rollback_transaction(self):
         """回滚事务"""
-        if not self.conn:
-            logger.warning("无活跃连接，跳过事务回滚")
-            return
         try:
             self.conn.rollback()
-            # 恢复自动提交
-            if self.type == "sqlite":
-                self.conn.isolation_level = None
-            else:
-                self.conn.autocommit = True
         except Exception as e:
             raise TransactionError(f"回滚事务失败：{e}")
         finally:
             self.close()
 
-    def transaction(self) -> TransactionContext:
-        """获取事务上下文"""
+    def transaction(self):
+        """返回事务上下文"""
         return TransactionContext(self)
 
-    # ------------------------ SQL 执行（修复 autocommit 判断） ------------------------
-    def execute(self, sql: str, params: Tuple = (), return_id: bool = False, close_after: bool = True) -> Any:
+    # ------------------------ 执行与查询 ------------------------
+    def execute(self, sql: str, params: tuple = (), return_id: bool = False, close_after: bool = True):
         """执行 SQL"""
-        result = None
+        if not self.connect():
+            raise DatabaseError("数据库未连接")
         try:
-            if not self.connect():
-                raise DatabaseError("无法创建连接，SQL执行失败")
-            
+            sql = self.adapter.convert_placeholder(sql.strip())
             self.cursor.execute(sql, params)
-            
-            # 修复：适配不同数据库的 autocommit 判断
-            is_autocommit = False
-            if self.type == "sqlite":
-                # SQLite 通过 isolation_level 判断自动提交状态
-                is_autocommit = self.conn.isolation_level is None
-            else:
-                is_autocommit = self.conn.autocommit if hasattr(self.conn, 'autocommit') else True
-            
-            if is_autocommit:
-                self.conn.commit()
-            
-            # 返回主键 ID
             if return_id:
-                if self.type == "mysql":
-                    result = self.cursor.lastrowid
-                elif self.type == "postgresql":
-                    fetch_result = self.cursor.fetchone()
-                    result = fetch_result[0] if fetch_result else None
+                if self.type == "postgresql":
+                    return self.cursor.fetchone()[0]
                 elif self.type == "sqlite":
-                    result = self.conn.lastrowid
-            else:
-                # 返回受影响行数
-                result = self.cursor.rowcount
-            
-            return result
+                    return self.cursor.lastrowid
+                else:
+                    return self.cursor.lastrowid
+            return self.cursor.rowcount
         except Exception as e:
-            # 修复：事务内不回滚
-            if self.conn:
-                if self.type == "sqlite":
-                    is_autocommit = self.conn.isolation_level is None
-                else:
-                    is_autocommit = self.conn.autocommit if hasattr(self.conn, 'autocommit') else True
-                
-                if is_autocommit:
-                    self.rollback_transaction()
-            raise DatabaseError(f"SQL执行失败：{e} | SQL：{sql} | 参数：{params}")
+            raise DatabaseError(f"执行失败：{e}\nSQL：{sql}\n参数：{params}")
         finally:
-            # 事务内不关闭连接
-            if close_after and self.conn:
-                if self.type == "sqlite":
-                    is_autocommit = self.conn.isolation_level is None
-                else:
-                    is_autocommit = self.conn.autocommit if hasattr(self.conn, 'autocommit') else True
-                
-                if is_autocommit:
-                    self.close()
+            if close_after:
+                self.close()
 
-    def fetch_one(self, sql: str, params: Tuple = ()) -> Optional[Dict]:
-        """查询单行"""
+    def fetch_all(self, sql: str, params: tuple = (), close_after: bool = True):
+        """查询所有结果"""
+        if not self.connect():
+            raise DatabaseError("数据库未连接")
         try:
-            self.execute(sql, params, close_after=False)
-            row = self.cursor.fetchone()
-            return dict(row) if row else None
+            sql = self.adapter.convert_placeholder(sql.strip())
+            self.cursor.execute(sql, params)
+            return self.cursor.fetchall()
+        except Exception as e:
+            raise DatabaseError(f"查询失败：{e}\nSQL：{sql}\n参数：{params}")
         finally:
-            self.close()
+            if close_after:
+                self.close()
 
-    def fetch_all(self, sql: str, params: Tuple = ()) -> List[Dict]:
-        """查询多行"""
+    def fetch_one(self, sql: str, params: tuple = (), close_after: bool = True):
+        """查询单条结果"""
+        if not self.connect():
+            raise DatabaseError("数据库未连接")
         try:
-            self.execute(sql, params, close_after=False)
-            rows = self.cursor.fetchall()
-            return [dict(row) for row in rows] if rows else []
+            sql = self.adapter.convert_placeholder(sql.strip())
+            self.cursor.execute(sql, params)
+            return self.cursor.fetchone()
+        except Exception as e:
+            raise DatabaseError(f"查询失败：{e}\nSQL：{sql}\n参数：{params}")
         finally:
-            self.close()
+            if close_after:
+                self.close()
 
-    # ------------------------ 元数据查询 ------------------------
-    def get_table_metadata(self, table_name: str) -> Dict[str, Dict]:
-        """获取表元数据"""
+    def get_table_metadata(self, table_name: str):
+        """获取表结构元信息"""
         sql = self.adapter.get_table_metadata_sql(table_name)
-        sql = self.adapter.convert_placeholder(sql)
-        results = self.fetch_all(sql, (table_name,))
-        
+        rows = self.fetch_all(sql, (table_name,), close_after=True)
         meta = {}
-        for row in results:
-            if self.type == "sqlite":
-                meta[row["name"]] = {
-                    "name": row["name"],
+        if self.type == "mysql":
+            for row in rows:
+                name = row["name"]
+                meta[name] = {
                     "type": row["type"],
-                    "nullable": bool(row["notnull"] == 0),
-                    "default": row["dflt_value"]
+                    "nullable": row["nullable"] == "YES",
+                    "default": row["default"]
                 }
-            else:
-                meta[row["name"]] = row
-        
+        elif self.type == "postgresql":
+            for row in rows:
+                name = row["name"]
+                meta[name] = {
+                    "type": row["type"],
+                    "nullable": row["nullable"],
+                    "default": row["default"]
+                }
+        elif self.type == "sqlite":
+            for row in rows:
+                name = row[1]
+                meta[name] = {
+                    "type": row[2],
+                    "nullable": not row[3],
+                    "default": row[4]
+                }
         return meta
 
-# ======================== 12. 快捷函数 ========================
-def SqliteDatabase(database: str, pool_enable: bool = False) -> Database:
-    """快捷创建 SQLite 数据库"""
-    return Database("sqlite", pool_enable, database=database)
-
-def MySQLDatabase(database: str, user: str, password: str, host: str = "127.0.0.1", 
-                  port: int = 3306, pool_enable: bool = True) -> Database:
-    """快捷创建 MySQL 数据库"""
-    return Database(
-        "mysql", pool_enable,
-        host=host, port=port, user=user, password=password,
-        database=database, charset="utf8mb4"
-    )
-
-def PostgresqlDatabase(database: str, user: str, password: str, host: str = "127.0.0.1", 
-                       port: int = 5432, pool_enable: bool = True) -> Database:
-    """快捷创建 PostgreSQL 数据库"""
-    return Database(
-        "postgresql", pool_enable,
-        host=host, port=port, user=user, password=password,
-        database=database
-    )
-
-# ======================== 13. 完整测试用例 ========================
-# ======================== 13. 完整测试用例 ========================
+# ======================== 12. 快速使用示例（可直接运行） ========================
 if __name__ == "__main__":
-    # ========== 选择数据库类型（按需切换） ==========
-    # 1. SQLite（推荐：无需额外配置，直接运行）
-    # DB = SqliteDatabase("peewee_orm.db", pool_enable=False)
-    
-    # 2. MySQL（需配置实际数据库信息）
-    # DB = MySQLDatabase(
-    #     database="test_db",
-    #     host="127.0.0.1",
-    #     port=3306,
-    #     user="root",
-    #     password="123456",
-    #     pool_enable=True
-    # )
-    
-    # 3. PostgreSQL（需配置实际数据库信息）
-    DB = PostgresqlDatabase(
-        database="admin_system",
-        host="127.0.0.1",
-        port=5432,
-        user="postgres",
-        password="postgres",
-        pool_enable=True
-    )
+    # 1. 创建数据库实例（SQLite 示例）
+    db = Database("sqlite", database="demo.db")
 
-    # 基础模型（所有模型继承此类）
-    class BaseModel(Model):
+    # 2. 定义模型
+    class User(Model):
+        id = IntegerField(primary_key=True, auto_increment=True, comment="用户ID")
+        username = StringField(max_length=50, unique=True, comment="用户名")
+        age = IntegerField(nullable=True, comment="年龄")
+        create_time = DateTimeField(auto_now_add=True, comment="创建时间")
+
         class Meta:
-            database = DB
+            table_name = "user"
+            database = db
 
-    try:
-        # ========== 定义业务模型（使用所有新增字段） ==========
-        class Product(BaseModel):
-            """商品模型"""
-            id = IntegerField(primary_key=True, auto_increment=True)
-            name = StringField(max_length=100, nullable=False, index=True)  # 字符串字段 + 索引
-            price = DecimalField(max_digits=10, decimal_places=2, default=decimal.Decimal("0.00"))  # 高精度小数
-            stock = IntegerField(default=0)
-            weight = FloatField(nullable=True)  # 浮点数字段
-            create_date = DateField(default=datetime.date.today)  # 日期字段
-            create_time = TimeField(default=datetime.datetime.now().time)  # 时间字段
-            update_at = DateTimeField(default=datetime.datetime.now)  # 日期时间字段
-            is_active = BooleanField(default=True)  # 布尔字段
-            uuid = UUIDField(unique=True, default=lambda: str(uuid.uuid4()))  # UUID 字段
-            description = TextField(nullable=True)  # 文本字段
-            image = BinaryField(nullable=True)  # 二进制字段
-            big_number = BigIntegerField(default=0)  # 大整型字段
+    class Post(Model):
+        id = IntegerField(primary_key=True, auto_increment=True)
+        title = StringField(max_length=200)
+        user_id = ForeignKeyField(to=User, backref="posts", on_delete="CASCADE")
 
-            class Meta:
-                table_name = "product"
+        class Meta:
+            table_name = "post"
+            database = db
 
-        class Order(BaseModel):
-            """订单模型（含外键）"""
-            id = IntegerField(primary_key=True, auto_increment=True)
-            order_no = StringField(max_length=32, unique=True)
-            product_id = ForeignKeyField(to=Product, backref="orders", on_delete="CASCADE", on_update="CASCADE")
-            amount = DecimalField(max_digits=10, decimal_places=2)
-            total_price = FloatField(default=0.0)
+    # 3. 创建表
+    User.create_table()
+    Post.create_table()
 
-            class Meta:
-                table_name = "order"
-        class User(BaseModel):
-            
-            id =  IntegerField(primary_key=True, comment="用户ID")
-            username = StringField(max_length=32, unique=True, nullable=False, comment="用户名")
-            password = StringField(max_length=255, nullable=False, comment="加密密码")
-            nickname = StringField(max_length=32, nullable=False, comment="昵称")
-            email = StringField(max_length=64, default="", comment="邮箱")
-            phone = StringField(max_length=11, default="", comment="手机号")
-            avatar = StringField(max_length=255, default="/static/imgs/avatar-default.png", comment="头像")
-            # role_id = ForeignKeyField(to=Role, nullable=False, comment="角色ID")
-            status =  IntegerField(default=1, comment="状态 0-禁用 1-启用")
-            last_login_time = DateTimeField(nullable=True, comment="最后登录时间")
-            create_time = DateTimeField(auto_now_add=True, comment="创建时间")
-            update_time = DateTimeField(auto_now=True, comment="更新时间")
-       
-       
-       
-        # ========== 清理旧表（首次运行可注释） ==========
-        try:
-            if DB.type == "mysql":
-                DB.execute("DROP TABLE IF EXISTS `order` CASCADE;")
-                DB.execute("DROP TABLE IF EXISTS `product` CASCADE;")
-            else:
-                DB.execute("DROP TABLE IF EXISTS \"order\" CASCADE;")
-                DB.execute("DROP TABLE IF EXISTS \"product\" CASCADE;")
-            logger.info("旧表清理完成")
-        except Exception as e:
-            logger.warning(f"清理旧表失败（首次运行可忽略）：{e}")
+    # 4. 新增
+    user = User(username="test_user", age=25)
+    user.save()
 
-        # ========== 创建表 ==========
-        Product.create_table()
-        Order.create_table()
-        logger.info("所有表创建完成")
+    post = Post(title="Hello ORM", user_id=user.id)
+    post.save()
 
-        # ========== 插入测试数据 ==========
-        # 1. 插入商品
-        product = Product(
-            name="测试商品1",
-            price=decimal.Decimal("99.99"),
-            stock=100,
-            weight=1.5,
-            description="这是一个测试商品",
-            big_number=9999999999
-        )
-        product_id = product.save()
-        logger.info(f"插入商品成功，ID：{product_id}")
+    # 5. 查询
+    u = User.get(username="test_user")
+    print("查询到用户：", u.to_dict())
 
-        # 2. 插入订单（使用外键，修复 order_no 格式化）
-        with DB.transaction():
-            # 补全 order_no 的格式化字符串
-            order_no = f"ORD{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
-            order = Order(
-                order_no=order_no,
-                product_id=product_id,  # 外键关联商品ID
-                amount=decimal.Decimal("2"),
-                total_price=float(decimal.Decimal("99.99") * decimal.Decimal("2"))
-            )
-            order_id = order.save(close_after=False)  # 事务内不关闭连接
-            logger.info(f"插入订单成功，ID：{order_id}")
+    # 6. 关联查询
+    posts = u.posts()
+    print("该用户的文章：", [p.to_dict() for p in posts])
 
-        # ========== 查询测试 ==========
-        # 1. 查询单个商品
-        query_product = Product.get_or_none(id=product_id)
-        if query_product:
-            logger.info(f"查询商品成功：ID={query_product.id}, 名称={query_product.name}, 价格={query_product.price}")
-        
-        # 2. 查询订单（关联商品）
-        query_order = Order.get_or_none(id=order_id)
-        if query_order:
-            logger.info(f"查询订单成功：订单号={query_order.order_no}, 商品ID={query_order.product_id}, 总价={query_order.total_price}")
-        
-        # 3. 测试反向引用（通过商品查订单）
-        product_orders = query_product.orders()
-        logger.info(f"商品{query_product.name}关联的订单数量：{len(product_orders)}")
+    # 7. 更新
+    User.update({"age": 26}, id=user.id)
 
-        # ========== 更新测试 ==========
-        # 更新商品库存
-        update_count = Product.update(
-            data={"stock": 98},
-            id=product_id
-        )
-        logger.info(f"更新商品库存，受影响行数：{update_count}")
-        
-        # 验证更新结果
-        updated_product = Product.get_or_none(id=product_id)
-        logger.info(f"商品更新后库存：{updated_product.stock}")
-        # User.migrate_table()                          
-        # ========== 表迁移测试 ==========
-        # 给 Product 模型新增一个字段，测试迁移
-        class Product(BaseModel):
-            """商品模型（新增字段）"""
-            id = IntegerField(primary_key=True, auto_increment=True)
-            name = StringField(max_length=100, nullable=False, index=True)
-            price = DecimalField(max_digits=10, decimal_places=2, default=decimal.Decimal("0.00"))
-            stock = IntegerField(default=0)
-            weight = FloatField(nullable=True)
-            create_date = DateField(default=datetime.date.today)
-            create_time = TimeField(default=datetime.datetime.now().time)
-            update_at = DateTimeField(default=datetime.datetime.now)
-            is_active = BooleanField(default=True)
-            uuid = UUIDField(unique=True, default=lambda: str(uuid.uuid4()))
-            description = TextField(nullable=True)
-            image = BinaryField(nullable=True)
-            big_number = BigIntegerField(default=0)
-            # 新增字段
-            sale_count = IntegerField(default=0, nullable=False)  # 销量
+    # 8. 事务示例
+    with db.transaction():
+        u1 = User(username="tx_user1", age=20)
+        u1.save()
+        u2 = User(username="tx_user2", age=21)
+        u2.save()
 
-            class Meta:
-                table_name = "product"
-        user = User.get(username="admin")
-        # user = User.get(id=1)
-        logger.info(f"完成 {user.id}")
-        # 执行迁移
-        migrate_commands = Product.migrate_table(drop_absent=False)
-        logger.info(f"表迁移完成，执行了 {len(migrate_commands)} 条迁移语句")
-
-        logger.info("所有测试用例执行完成！")
-
-    except Exception as e:
-        logger.error(f"测试执行失败：{e}", exc_info=True)
-    finally:
-        # 关闭数据库连接池
-        DB.pool.close_pool()
+    print("ORM 框架运行成功！")

@@ -36,7 +36,7 @@ def _get_csrf_token_from_request(request):
     3. URL参数中的 csrf_token
     """
     # 1. 从请求头读取（前端主流方式）
-    logger.info(f"[CSRF] 后端收到的所有请求头：{dict(request.headers)}")
+    # logger.info(f"[CSRF] 后端收到的所有请求头：{dict(request.headers)}")
     token = request.headers.get("X-CSRF-Token") or request.headers.get("x-csrf-token")
     if token:
         return token.strip()

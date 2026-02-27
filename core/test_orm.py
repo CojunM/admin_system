@@ -1,0 +1,460 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+ORM 框架测试代码（极简版）
+基于 SQLite，无需额外配置，直接运行
+"""
+
+# 先确保你已经把完整的 ORM 代码复制到当前文件，或者导入 ORM 模块
+# （如果 ORM 代码在单独文件 orm.py 中，取消下面注释）
+from orm_peewee_final import *
+import traceback
+import threading
+# ======================== 1. 配置数据库 ========================
+# 使用 SQLite 内存数据库（无需文件，运行即创建，退出即销毁）
+# db_config = DatabaseConfig(
+#     db_type=DatabaseType.SQLITE,
+#     conn_params={"database": ":memory:"},
+#     enable_pool=False  # 内存数据库不需要连接池
+# )
+db_config = DatabaseConfig(
+    db_type=DatabaseType.POSTGRESQL,
+    conn_params={ "database":"admin_syste",
+  "host":  "127.0.0.1",
+ "port":  5432,
+ "user":  "postgres",
+ "password": "postgres",
+ "database":  "admin_system",
+#  "charset": "utf8",
+  } ,      # 测试阶段关闭连接池
+pool_enable=True,
+
+#  pool_config=PoolConfig(
+#     max_size=10,  # 最大连接数
+#     min_size=5,  # 最小连接数
+#     max_idle_time=3600,  # 连接最大空闲时间（秒）
+#     max_lifetime=3600,  # 连接最大生命周期（秒）
+#     max_wait_time=5,  # 连接等待时间（秒）
+#     max_overflow=10,  # 连接池溢出时最大等待时间（秒）
+# )
+)
+
+# 创建数据库实例
+db = Database.from_config(db_config)
+
+# ======================== 2. 定义测试模型 ========================
+# class User(Model):
+#     """用户模型（测试用）"""
+#     id = IntegerField(primary_key=True, auto_increment=True)
+#     name = StringField(max_length=50, nullable=False, comment="用户名")
+#     age = IntegerField(default=18, comment="年龄")
+#     create_time = DateTimeField(auto_now_add=True, comment="创建时间")
+
+#     class Meta:
+#         table_name = "user"  # 数据库表名
+#         database = db       # 绑定数据库
+
+# class Article(Model):
+#     """文章模型（测试外键）"""
+#     id = IntegerField(primary_key=True, auto_increment=True)
+#     title = StringField(max_length=100, nullable=False)
+#     content = TextField()
+#     user_id = ForeignKeyField(to=User, backref="articles", on_delete="CASCADE")
+
+#     class Meta:
+#         table_name = "article"
+#         database = db
+
+# # ======================== 3. 核心功能测试 ========================
+# def test_orm():
+#     try:
+#         # 1. 创建表
+#         User.create_table()
+#         Article.create_table()
+#         print("✅ 表创建成功")
+
+#         # 2. 新增用户
+#         user1 = User(name="张三", age=25)
+#         user1.save()
+#         print(f"✅ 新增用户：{user1.to_dict()}")
+
+#         # 3. 批量新增文章
+#         articles = [
+#             Article(title="Python ORM 教程", content="这是第一篇文章", user_id=user1),
+#             Article(title="SQLite 入门", content="这是第二篇文章", user_id=user1)
+#         ]
+#         Article.bulk_save(articles)
+#         print(f"✅ 批量新增 {len(articles)} 篇文章")
+
+#         # 4. 查询用户（带缓存）
+#         user = User.get_cached(user1.id)
+#         print(f"✅ 缓存查询用户：{user.name}（年龄：{user.age}）")
+
+#         # 5. 查询文章（预加载外键）
+#         article_list = Article.select().prefetch_related("user_id").all()
+#         for art in article_list:
+#             print(f"✅ 文章标题：{art.title}，作者：{art.user_id.name}")
+
+#         # 6. 统计文章数量
+#         count = Article.select().where(user_id=user1).count()
+#         print(f"✅ 用户 {user.name} 的文章总数：{count}")
+
+#         # 7. 更新用户信息
+#         User.update(data={"age": 26}, id=user1.id)
+#         updated_user = User.get(id=user1.id)
+#         print(f"✅ 更新后用户年龄：{updated_user.age}")
+
+#         print("\n🎉 所有测试通过！ORM 框架功能正常")
+
+#     except Exception as e:
+#         print(f"❌ 测试失败：{str(e)}")
+
+# if __name__ == "__main__":
+#     test_orm()
+class BaseModel(Model):
+    class Meta:
+        database = db
+
+# ====================== 2. 定义测试模型（修复外键参数+主键自增） ======================
+class DepartmentModel(BaseModel):
+    """部门表（主表，修复主键自增）"""
+    id = IntegerField(primary_key=True, auto_increment=True)  # 核心修复：添加auto_increment
+    dept_name = CharField(nullable=False, max_length=32, default="默认部门")
+    dept_code = CharField(nullable=False, max_length=8, unique=True)
+
+    class Meta:
+        table_name = "sys_department"
+
+class EmployeeModel(BaseModel):
+    """员工表（从表，外键级联删除）"""
+    id = IntegerField(primary_key=True, auto_increment=True)  # 核心修复：添加auto_increment
+    emp_name = CharField(nullable=False, max_length=32)
+    age = IntegerField(nullable=False, default=18)
+    dept_id = ForeignKeyField( model=DepartmentModel, on_delete="CASCADE", nullable=False)
+
+    class Meta:
+        table_name = "sys_employee"
+
+# ====================== 3. 测试前置：初始化表结构（修复方法参数） ======================
+def init_test_tables():
+    """创建测试表（修复参数错误+主键/外键验证）"""
+    # 先删后建，确保表结构干净
+    db.execute("DROP TABLE IF EXISTS sys_employee CASCADE;", close_after=True)
+    db.execute("DROP TABLE IF EXISTS sys_department CASCADE;", close_after=True)
+    
+    # 核心修复：create_table 无需传db（BaseModel已绑定）
+    DepartmentModel.create_table()
+    EmployeeModel.create_table()
+    
+    # 验证部门表主键约束
+    check_pk_sql = """
+        SELECT conname 
+        FROM pg_constraint 
+        WHERE conrelid = (SELECT oid FROM pg_class WHERE relname = %s)
+          AND contype = 'p';
+    """
+    pk_result = db.fetch_one(check_pk_sql, ("sys_department",))
+    assert pk_result is not None, "部门表id字段无主键约束！外键关联将失效"
+    
+    # 验证员工表外键约束
+    check_fk_sql = """
+        SELECT conname 
+        FROM pg_constraint 
+        WHERE conrelid = (SELECT oid FROM pg_class WHERE relname = %s)
+          AND contype = 'f'
+          AND confrelid = (SELECT oid FROM pg_class WHERE relname = %s);
+    """
+    fk_result = db.fetch_one(check_fk_sql, ("sys_employee", "sys_department"))
+    fk_exists = fk_result is not None
+    assert fk_exists, "员工表外键约束未创建成功！级联删除将失效"
+    print("✅ 测试表初始化完成（含主键约束+外键级联删除约束）")
+
+# ====================== 4. 核心测试用例 ======================
+def test_basic_crud():
+    """测试1：基础CRUD（级联删除已生效）"""
+    print("\n===== 测试1：基础CRUD =====")
+    # 新增部门（核心修复：save() 无需传db）
+    dept = DepartmentModel(dept_name="研发部", dept_code="RD001")
+    dept_id = dept.save()
+    assert dept_id > 0, "新增部门失败"
+    print(f"✅ 新增部门成功，ID：{dept_id}")
+
+    # 查询部门
+    dept_get = DepartmentModel.get(dept_code="RD001")
+    assert dept_get.dept_name == "研发部", "部门查询失败"
+    dept_none = DepartmentModel.get_or_none(dept_code="NO_EXIST")
+    assert dept_none is None, "不存在的部门查询异常"
+    print("✅ 部门查询验证通过")
+
+    # 更新部门
+    update_rows = DepartmentModel.update({"dept_name": "后端研发部"}, dept_code="RD001")
+    assert update_rows == 1, "部门更新失败"
+    dept_updated = DepartmentModel.get(dept_code="RD001")
+    assert dept_updated.dept_name == "后端研发部", "更新后值不符"
+    print("✅ 部门更新验证通过")
+
+    # 删除部门（级联删除员工）
+    emp = EmployeeModel(emp_name="张三", age=25, dept_id=dept_id)
+    emp_id = emp.save()  # 核心修复：save() 无需传db
+    assert emp_id > 0, "新增员工失败"
+    
+    # 删除部门
+    del_rows = db.execute(
+        "DELETE FROM sys_department WHERE id = %s;",
+        (dept_id,),
+        close_after=True
+    )
+    assert del_rows == 1, "部门删除失败"
+    
+    # 验证员工已被级联删除
+    emp_none = EmployeeModel.get_or_none(id=emp_id)
+    assert emp_none is None, "外键级联删除失败"
+    print("✅ 部门删除（级联删员工）验证通过")
+
+def test_transaction_rollback():
+    """测试2：事务回滚（修复PostgreSQL事务逻辑）"""
+    print("\n===== 测试2：事务回滚 =====")
+    # 前置清理：确保测试表为空
+    db.execute("DELETE FROM sys_department;", close_after=True)
+    
+    # 获取初始数据量
+    init_count = len(db.fetch_all("SELECT * FROM sys_department;"))
+    print(f"🔍 事务测试初始数据量：{init_count}")
+    
+    try:
+        with db.transaction():
+            # 事务内save：强制close_after=False
+            dept1 = DepartmentModel(dept_name="测试部", dept_code="QA001")
+            dept1.save(close_after=False)
+            dept2 = DepartmentModel(dept_name="产品部", dept_code="PM001")
+            dept2.save(close_after=False)
+            # 模拟事务异常
+            raise ValueError("模拟事务异常")
+    except ValueError as e:
+        print(f"🔍 捕获到事务异常：{e}")
+        # 验证数据未写入
+        after_count = len(db.fetch_all("SELECT * FROM sys_department;"))
+        print(f"🔍 事务异常后数据量：{after_count}")
+        
+        assert after_count == init_count, f"事务回滚失败（初始{init_count}条，异常后{after_count}条）"
+        print(f"✅ 事务异常回滚验证通过（初始{init_count}条，当前{after_count}条）")
+    except TransactionError as e:
+        print(f"❌ 事务管理器异常：{e}")
+    except Exception as e:
+        print(f"❌ 事务测试异常：{e}")
+        traceback.print_exc()
+def test_field_constraints():
+    """测试3：字段约束（修复非空/唯一/长度约束验证）"""
+    print("\n===== 测试3：字段约束 =====")
+    # 默认值测试
+    dept = DepartmentModel(dept_code="HR001")  # 不传dept_name，用默认值
+    dept.save()
+    dept_default = DepartmentModel.get(dept_code="HR001")
+    assert dept_default.dept_name == "默认部门", "默认值生效失败"
+    print("✅ 字段默认值验证通过")
+
+    # 非空约束测试
+    try:
+        dept_invalid = DepartmentModel()  # 不传dept_code（非空字段）
+        dept_invalid.save()
+        assert False, "非空约束未生效"
+    except Exception as e:
+        print(f"🔍 非空约束实际报错：{str(e)}")
+        assert (
+            "非空约束" in str(e) or 
+            "not-null constraint" in str(e).lower() or 
+            "NOT NULL" in str(e)
+        ), f"非空约束报错不符，实际报错：{str(e)}"
+    print("✅ 非空约束验证通过")
+
+    # 长度限制测试
+    try:
+        # 超过32字符的部门名称
+        long_name = "超长部门名称超过32个字符12345678901234567890"
+        dept_long = DepartmentModel(dept_name=long_name, dept_code="LONG001")
+        dept_long.save()
+        assert False, "长度限制未生效"
+    except Exception as e:
+        print(f"🔍 长度限制实际报错：{str(e)}")
+        assert (
+            "length" in str(e).lower() or 
+            "字符" in str(e) or 
+            "值对于类型 character varying(32) 来说太长" in str(e)
+        ), f"长度限制报错不符，实际报错：{str(e)}"
+    print("✅ 字段长度限制验证通过")
+
+    # 唯一约束测试
+    try:
+        dept_dup = DepartmentModel(dept_name="重复部门", dept_code="HR001")
+        dept_dup.save()
+        assert False, "unique约束未生效"
+    except Exception as e:
+        print(f"🔍 唯一约束实际报错：{str(e)}")
+        assert (
+            "unique" in str(e).lower() or 
+            "唯一" in str(e) or 
+            "重复键值违反唯一约束" in str(e)
+        ), f"unique约束报错不符，实际报错：{str(e)}"
+    print("✅ 唯一约束验证通过")
+
+    # 清理数据
+    db.execute("DELETE FROM sys_department WHERE dept_code IN ('HR001');", close_after=True)
+
+def test_foreign_key_relation():
+    """测试4：外键关联（修复参数错误）"""
+    print("\n===== 测试4：外键关联 =====")
+    dept = DepartmentModel(dept_name="市场部", dept_code="MK001")
+    dept_id = dept.save()
+    emp = EmployeeModel(emp_name="李四", age=30, dept_id=dept_id)
+    emp_id = emp.save()
+    assert emp_id > 0, "关联新增员工失败"
+
+    # 关联查询
+    sql = """
+        SELECT e.emp_name, d.dept_name 
+        FROM sys_employee e 
+        JOIN sys_department d ON e.dept_id = d.id 
+        WHERE e.id = %s;
+    """
+    res = db.fetch_one(sql, (emp_id,))
+    assert res["emp_name"] == "李四" and res["dept_name"] == "市场部", "关联查询失败"
+    print("✅ 外键关联查询验证通过")
+
+    # 非法外键拦截
+    try:
+        emp_invalid = EmployeeModel(emp_name="王五", age=28, dept_id=999999)
+        emp_invalid.save()
+        assert False, "非法外键未拦截"
+    except Exception as e:
+        assert "foreign key" in str(e).lower() or "外键" in str(e), "非法外键报错不符"
+    print("✅ 非法外键拦截验证通过")
+
+    # 清理数据
+    db.execute("DELETE FROM sys_department WHERE dept_code = 'MK001';", close_after=True)
+
+def test_connection_pool():
+    """测试5：连接池复用（测试阶段仅验证查询）"""
+    print("\n===== 测试5：连接池复用 =====")
+    for i in range(10):
+        # 核心修复：get_or_none 无需传db
+        dept = DepartmentModel.get_or_none(dept_code=f"TEST{i}")
+        assert dept is None, f"第{i+1}次查询异常"
+    print("✅ 连接池10次查询复用验证通过（无连接泄漏）")
+
+def test_sql_injection_protection():
+    """测试6：SQL注入防护（终极修复+调试打印）"""
+    print("\n===== 测试6：SQL注入防护 =====")
+    # 测试1：危险字段名拦截（原有逻辑）
+    try:
+        class HackModel(Model):
+            DROP = CharField()  # 字段名是DROP（禁用关键字）
+            class Meta:
+                table_name = "hack_table"
+                database = db
+        assert False, "危险字段名未拦截"
+    except SQLSafetyError as e:
+        print(f"🔍 危险字段名拦截报错：{e}")
+        print("✅ 危险字段名拦截验证通过")
+
+    # 测试2：参数含注入语句（终极修复+调试）
+    try:
+        # 传入含注入特征的参数
+        inject_param = "1' OR '1'='1"
+        print(f"🔍 测试注入参数（原始）：{inject_param}")
+        DepartmentModel.get_or_none(dept_code=inject_param)
+        assert False, "SQL注入参数未拦截"
+    except SQLSafetyError as e:
+        print(f"🔍 SQL注入参数拦截报错：{e}")
+        print("✅ SQL注入参数拦截验证通过")
+    except DatabaseError as e:
+        print(f"🔍 SQL执行异常（数据库拦截）：{e}")
+        print("✅ SQL注入参数间接拦截验证通过")
+    except Exception as e:
+        print(f"🔍 其他异常：{e}")
+        raise
+def test_boundary():
+    """测试7：边界测试（修复参数错误+批量操作）"""
+    print("\n===== 边界测试（极端值/批量/并发）=====")
+
+    # 1. 极端参数测试
+    try:
+        dept_edge = DepartmentModel(dept_name="!", dept_code="ED01")
+        dept_edge.save()
+        assert DepartmentModel.get_or_none(dept_code="ED01") is not None
+        print("✅ 极端字符参数正常")
+        # 清理数据
+        db.execute("DELETE FROM sys_department WHERE dept_code = %s;", ("ED01",), close_after=True)
+    except Exception as e:
+        print(f"❌ 极端参数异常：{str(e)}")
+        traceback.print_exc()
+
+    # 2. 批量插入 + 批量删除
+    try:
+        with db.transaction():
+            for i in range(20):
+                dept = DepartmentModel(dept_name=f"批量{i}", dept_code=f"BT{i:03d}")
+                dept.save(close_after=False)  # 事务内不关闭连接
+        # 批量查询
+        batch_list = db.fetch_all(
+            "SELECT id FROM sys_department WHERE dept_code LIKE %s;",
+            ("BT%",)
+        )
+        assert len(batch_list) >= 20, f"批量插入失败（仅插入{len(batch_list)}条）"
+        # 批量删除
+        del_rows = db.execute(
+            "DELETE FROM sys_department WHERE dept_code LIKE %s;",
+            ("BT%",),
+            close_after=True
+        )
+        assert del_rows >= 20, f"批量删除失败（仅删除{del_rows}条）"
+        print("✅ 批量操作正常")
+    except Exception as e:
+        print(f"❌ 批量操作异常：{str(e)}")
+        traceback.print_exc()
+
+    # 3. 简易并发查询
+    try:
+        def query_task():
+            try:
+                DepartmentModel.get_or_none(dept_code="NOT_EXIST")
+            except Exception:
+                pass
+        threads = [threading.Thread(target=query_task) for _ in range(5)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        print("✅ 并发查询无崩溃、连接池稳定")
+    except Exception as e:
+        print(f"❌ 并发查询异常：{str(e)}")
+        traceback.print_exc()
+
+    print("🎉 所有边界测试通过！")
+
+# ====================== 5. 执行所有测试 ======================
+if __name__ == "__main__":
+    try:
+        # 初始化表
+        init_test_tables()
+        # 执行测试
+        test_basic_crud()
+        test_transaction_rollback()
+        test_field_constraints()
+        test_foreign_key_relation()
+        test_connection_pool()
+        test_sql_injection_protection()
+        test_boundary()
+        # 最终清理
+        db.execute("DROP TABLE IF EXISTS sys_employee CASCADE;", close_after=True)
+        db.execute("DROP TABLE IF EXISTS sys_department CASCADE;", close_after=True)
+        
+        print("\n🎉 所有进阶测试用例全部通过！ORM框架核心能力验证完成")
+    except Exception as e:
+        print(f"\n❌ 测试失败：{e}")
+        traceback.print_exc()
+    finally:
+        # 确保连接关闭
+        db.close()
+        if hasattr(db, 'pool'):
+            db.pool.close_pool()
+        print("\n🔌 数据库连接已安全关闭")

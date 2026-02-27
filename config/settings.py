@@ -43,8 +43,45 @@ DB_CONFIG = {
 
 }
 # 安全配置
+# 脱敏配置（独立管理，无需改代码）
+DESENSITIZE_CONFIG = {
+    # 跳过脱敏的路径（支持模糊匹配）
+    "exclude_paths": ["/api/user/login", "/api/user/info", "/api/user/refresh"],
+    # 脱敏规则（新增字段只需加这里）
+    "rules": {
+        "phone": {
+            "pattern": r"^1[3-9]\d{9}$",  # 严格手机号正则
+            "handler": lambda x: f"{x[:3]}****{x[-4:]}"
+        },
+        "email": {
+            "pattern": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+            "handler": lambda x: f"{x[:2]}****@{x.split('@', 1)[1]}"
+        },
+        "id_card": {
+            "pattern": r"^\d{18}$",
+            "handler": lambda x: f"{x[:6]}********{x[-4:]}"
+        },
+        "bank_card": {
+            "pattern": r"^\d{16,19}$",
+            "handler": lambda x: f"{x[:4]}********{x[-4:]}"
+        }
+    },
+    # 性能控制
+    "max_body_size": 1024 * 1024,  # 1MB以上跳过
+    "enable": True  # 全局开关（测试环境可关闭）
+}
 CSRF_SECRET = os.getenv("CSRF_SECRET", "default_csrf_secret")
-RATE_LIMIT_MAX = int(os.getenv("RATE_LIMIT_MAX", 100))  # 每分钟请求数
+# 基础限流阈值（每分钟最大请求数）
+RATE_LIMIT_MAX = int(os.getenv("RATE_LIMIT_MAX", 100))   # 从默认的10/20调高，避免正常请求被限
+# 限流白名单（核心接口豁免）
+RATE_LIMIT_WHITELIST = [
+    "/api/user/info",       # 用户信息接口
+    "/api/user/login",      # 登录接口
+    "/api/dashboard/stats", # 仪表盘统计
+    "/api/dashboard/role-distribution"  # 角色分布
+]
+# 限流时间窗口（秒）
+RATE_LIMIT_WINDOW = 60
 PASSWORD_ROUNDS = int(os.getenv("PASSWORD_ROUNDS", 12))  # bcrypt轮数
 DESENSITIZE_FIELDS = os.getenv("DESENSITIZE_FIELDS", "phone,email").split(",")
 THROTTLE_TIMEOUT = 1  # 节流超时（秒）

@@ -49,6 +49,7 @@ def notify_list(request):
 @get("/api/notify/unread-count")
 def unread_count(request):
     """未读通知数量"""
+    # Notification.migrate_table()
     user_id = request.user.get("id")
     # 简化版：实际需用count查询
     unread = Notification.filter(user_id__in=[None, user_id], is_read=0)

@@ -31,6 +31,7 @@ def perm_add(request):
 @get("/api/permission/list")
 def perm_list(request):
     """权限列表（树形）"""
+
     perms = Permission.filter()
     perm_list = [p.to_dict() for p in perms]
     # 构建树形结构

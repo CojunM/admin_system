@@ -27,7 +27,7 @@ def user_login(request):
         
         # 查询用户（原有逻辑完全不变）
         user = User.get(username="admin")
-        logger.info(f"用户名1 {user.username}")
+        # logger.info(f"用户名1 {user.username}")
         if not user:
             logger.warning(f"[User] Login failed, user not found: {username} from {request.client_addr}")
             return 401, {"msg": "用户名或密码错误"}
@@ -53,7 +53,7 @@ def user_login(request):
         }
         # 核心替换：jwt.encode → jwt_encode（自定义方法）
         token = jwt_encode(payload, SECRET_KEY, algorithm="HS256")
-        print(token )
+        # print(token )
         # 返回用户信息（脱敏，原有逻辑完全不变）
         user_info = user.to_dict(exclude=["phone", "email"])
        
@@ -61,10 +61,10 @@ def user_login(request):
         
         # 获取角色信息
         try:
-            # role = Role.get(id=user.role_id.id)
-            role =user.role_id
+            role = Role.get(id=user.role_id)
+            # role =user.role_id
             user_info["role"] = role.name if role else "未知角色"
-            print (role.name,'user_info:',user_info,'token:',token )
+            # print (role.name,'user_info:',user_info,'token:',token )
         except Exception as e:
             logger.error(f"[User] Failed to get role for user {user.id}: {str(e)}")
             user_info["role"] = "未知角色"
@@ -86,7 +86,7 @@ def user_info(request):
     user_id = request.user.get("id")
     user = User.get(id=user_id)
     role = Role.get(id=user.role_id)
-    user_info = user.to_dict(desensitize_fields=["phone", "email"])
+    user_info = user.to_dict(exclude=["phone", "email"])
     del user_info["password"]
     user_info["role"] = role.name
     user_info["role_code"] = role.code

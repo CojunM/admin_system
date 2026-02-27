@@ -421,90 +421,27 @@ class PostgreSQLAdapter(BaseDatabaseAdapter):
         return f", FOREIGN KEY ({fk}) REFERENCES {t_tbl}({t_pk}) ON DELETE {inst.on_delete} ON UPDATE {inst.on_update}"
 
     def get_alter_add_field_sql(self, inst):
-        """
-        生成新增字段的 ALTER TABLE SQL（适配 PostgreSQL/MySQL/SQLite）
-        修复点：
-        1. 
-        2. 非空字段自动补充默认值（避免 PostgreSQL 空值报错）
-        3. 过滤空约束，避免 SQL 语法错误
-        4. 正确处理数据库函数默认值（如 CURRENT_TIMESTAMP 不加单引号）
-        """
         name = self.quote_identifier(inst.name)
         typ = self.get_field_type(inst.__class__.__name__, inst)
-        constraints = []
-        
-        # 1. 处理非空约束：无默认值时自动补充（解决 PostgreSQL 空值报错）
-        if not inst.nullable:
-            # 如果没有默认值，根据字段类型自动补充安全默认值
-            if inst.default is None:
-                if inst.__class__.__name__ in ["StringField", "CharField"]:
-                    inst.default = ""  # 字符串默认空串
-                elif inst.__class__.__name__ in ["IntegerField", "BigIntegerField"]:
-                    inst.default = 0   # 整型默认0
-                elif inst.__class__.__name__ == "BooleanField":
-                    inst.default = False  # 布尔默认False
-                elif inst.__class__.__name__ == "DateTimeField":
-                    inst.default = "CURRENT_TIMESTAMP"  # 时间字段默认当前时间
-            constraints.append("NOT NULL")
-        
-        # 2. 处理默认值（修复语法错误 + 兼容数据库函数）
+        constraints = ["NOT NULL"] if not inst.nullable else []
         if inst.default is not None:
             constraints.append(f"DEFAULT {inst._format_default(inst.default, self)}")
-        
-        # 3. 处理自增
         auto_inc = self.get_auto_increment_sql(inst)
         if auto_inc:
             constraints.append(auto_inc)
-        
-        # 4. 过滤空约束，避免生成多余空格
-        constraints_str = ' '.join([c for c in constraints if c])
-        
-        # 5. 拼接最终 SQL
-        return f"ADD COLUMN {name} {typ} {constraints_str}".strip()
+        return f"ADD COLUMN {name} {typ} {' '.join(constraints)}"
+
     def get_alter_modify_field_sql(self, inst):
-            """
-            生成修改字段的 SQL（修复 user_id 布尔判断错误）
-            核心：区分「状态字段（is_read）」和「普通整型字段（user_id）」的转换逻辑
-            """
-            name = self.quote_identifier(inst.name)
-            typ = self.get_field_type(inst.__class__.__name__, inst)
-            parts = []
-            
-            # 核心修复：根据字段名/用途选择不同的转换逻辑
-            if typ.upper() == "INTEGER":
-                # 场景1：状态类字段（is_read/is_deleted 等）→ 布尔转整数
-                if inst.name in ["is_read", "is_deleted", "is_active"]:
-                    using_clause = f"USING CASE " \
-                                f"WHEN {name} IS TRUE OR {name} = '1' OR {name} = 'true' THEN 1 " \
-                                f"WHEN {name} IS FALSE OR {name} = '0' OR {name} = 'false' THEN 0 " \
-                                f"ELSE 0 END"
-                # 场景2：普通整型字段（user_id/id 等）→ 直接转换（支持空值）
-                else:
-                    using_clause = f"USING {name}::integer"  # 无布尔判断，直接转整型
-            
-            elif typ.upper() == "BOOLEAN":
-                # 布尔类型转换（整数/字符串转布尔）
-                using_clause = f"USING CASE " \
-                            f"WHEN {name} = 1 OR {name} = '1' OR {name} = 'true' THEN TRUE " \
-                            f"ELSE FALSE END"
-            else:
-                # 其他类型默认转换
-                using_clause = f"USING {name}::{typ.lower()}"
-            
-            # 1. 修改字段类型（带适配的 USING 子句）
-            parts.append(f"ALTER COLUMN {name} TYPE {typ} {using_clause}")
-            
-            # 2. 设置/取消非空约束
-            if not inst.nullable:
-                parts.append(f"ALTER COLUMN {name} SET NOT NULL")
-            else:
-                parts.append(f"ALTER COLUMN {name} DROP NOT NULL")
-            
-            # 3. 设置默认值（如果有）
-            if inst.default is not None:
-                parts.append(f"ALTER COLUMN {name} SET DEFAULT {inst._format_default(inst.default, self)}")
-            
-            return ", ".join(parts)   
+        name = self.quote_identifier(inst.name)
+        typ = self.get_field_type(inst.__class__.__name__, inst)
+        parts = [
+            f"ALTER COLUMN {name} TYPE {typ}",
+            f"ALTER COLUMN {name} SET NOT NULL" if not inst.nullable else f"ALTER COLUMN {name} DROP NOT NULL"
+        ]
+        if inst.default is not None:
+            parts.append(f"ALTER COLUMN {name} SET DEFAULT {inst._format_default(inst.default, self)}")
+        return ", ".join(parts)
+
     def get_alter_drop_field_sql(self, name):
         quoted_name = self.quote_identifier(name)
         return f"DROP COLUMN {quoted_name}"
@@ -625,7 +562,6 @@ class Query:
 
     def execute(self) -> List:
         """执行查询"""
-        
         if self._executed:
             return self._results
         try:
@@ -675,20 +611,14 @@ class Field:
         self.model = None   # 所属模型（由元类自动赋值）
 
     def _format_default(self, value, adapter: BaseDatabaseAdapter = None) -> Any:
-        """格式化默认值（适配不同数据库，修复 PostgreSQL CURRENT_TIMESTAMP 语法）"""
+        """格式化默认值（适配不同数据库）"""
         if value is None:
             return "NULL"
         if callable(value):
             value = value()
-        
-        # 核心修复：跳过数据库函数的单引号包裹
-        db_functions = {"CURRENT_TIMESTAMP", "NOW()", "CURRENT_DATE", "CURRENT_TIME"}
-        if isinstance(value, str) and value in db_functions:
-            return value  # 直接返回函数名，不加单引号
-        
         if isinstance(value, str):
             escaped_value = value.replace("'", "''")
-            return f"'{escaped_value}'"  # 普通字符串仍加单引号
+            return f"'{escaped_value}'"  # 转义单引号
         elif isinstance(value, datetime.datetime):
             return f"'{value.strftime('%Y-%m-%d %H:%M:%S')}'"
         elif isinstance(value, datetime.date):
@@ -700,6 +630,7 @@ class Field:
         elif isinstance(value, (int, float, decimal.Decimal)):
             return str(value)
         return str(value)
+
     def get_sql_definition(self, adapter: BaseDatabaseAdapter) -> str:
         """获取字段 SQL 定义（包含索引/唯一约束）"""
         name = adapter.quote_identifier(self.name)
@@ -981,42 +912,19 @@ class ModelMeta(type):
 
     @staticmethod
     def _setup_backref(model_cls, fields: Dict[str, Field]):
-        """设置反向引用（修复 ModelMeta 无 _meta 错误）"""
+        """设置反向引用"""
         for field in fields.values():
             if isinstance(field, ForeignKeyField) and field.backref:
                 target_model = field.to_model
                 related_model = model_cls
                 field_name = field.name
                 
-                # 核心修复1：定义安全的反向引用方法（增加类型校验）
+                # 定义反向引用方法
                 def get_related(self, rm=related_model, fn=field_name):
-                    # 校验 self 是否是真正的模型实例（有 _meta 属性）
-                    if not hasattr(self, '_meta'):
-                        logger.warning(f"反向引用失败：{self.__class__.__name__} 不是有效模型实例")
-                        return []
-                    # 校验关联模型是否有效
-                    if not hasattr(rm, '_meta'):
-                        logger.warning(f"反向引用失败：{rm.__name__} 模型未初始化完成")
-                        return []
-                    # 安全执行查询
-                    try:
-                        return rm.select().where(**{fn: getattr(self, self._meta.primary_key.name)}).execute()
-                    except Exception as e:
-                        logger.error(f"反向引用查询失败：{e}")
-                        return []
+                    return rm.select().where(**{fn: self.id}).execute()
                 
-                # 核心修复2：只对有 _meta 属性的模型类绑定反向引用
-                if hasattr(target_model, '_meta'):
-                    setattr(target_model, field.backref, get_related)
-                else:
-                    # 延迟绑定：给未初始化的模型类添加初始化后绑定的钩子
-                    def bind_backref_on_init(cls):
-                        if hasattr(cls, '_meta') and not hasattr(cls, field.backref):
-                            setattr(cls, field.backref, get_related)
-                    # 给目标模型类添加 __init_subclass__ 钩子
-                    if not hasattr(target_model, '__init_subclass__'):
-                        target_model.__init_subclass__ = classmethod(bind_backref_on_init)
-                    logger.warning(f"模型 {target_model.__name__} 未初始化完成，已添加反向引用延迟绑定钩子")
+                setattr(target_model, field.backref, get_related)
+
 # ======================== 8. 模型基类 ========================
 class Model(metaclass=ModelMeta):
     """模型基类（重构版）"""
@@ -1126,41 +1034,43 @@ class Model(metaclass=ModelMeta):
         db.close()
         logger.info(f"表 {cls._meta.table_name} 创建完成（含 {len(index_sql_list)} 个索引）")
 
-    
     @classmethod
     def migrate_table(cls, drop_absent: bool = False):
+        """迁移表（新增/修改/删除字段）"""
         if not cls._meta.primary_key:
             raise MissingPrimaryKeyError(f"模型{cls.__name__}必须定义主键字段")
+        
         db = cls._get_database()
         adapter = db.adapter
         table_name = cls._meta.table_name
+        
+        # 获取表元数据
         db_meta = db.get_table_metadata(table_name)
         model_fields = cls._meta.fields
         model_keys = set(model_fields.keys())
         db_keys = set(db_meta.keys())
+        
         migrate_commands = []
-
-        for field_name in model_keys & db_keys:
-            field = model_fields[field_name]
-            db_field = db_meta[field_name]
-            need_modify = cls._check_field_need_modify(field, db_field, adapter)
-            if need_modify:
-                # 简化版：直接生成修改 SQL（PostgreSQL 自动兼容 USING 子句）
-                modify_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_modify_field_sql(field)};"
-                if modify_sql.strip():
-                    migrate_commands.append(modify_sql)
-                    logger.info(f"待修改字段：{field_name} | SQL：{modify_sql}")                # 3. 重新设置默认值（如果有）
-                if field.default is not None and adapter.__class__.__name__ == "PostgreSQLAdapter":
-                    default_val = field._format_default(field.default, adapter)
-                    migrate_commands.append(f"ALTER TABLE {adapter.quote_identifier(table_name)} ALTER COLUMN {adapter.quote_identifier(field_name)} SET DEFAULT {default_val};")
-
-        # 原有新增/删除字段逻辑保持不变
+        
+        # 新增字段
         for field_name in model_keys - db_keys:
             field = model_fields[field_name]
             add_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_add_field_sql(field)};"
             migrate_commands.append(add_sql)
             logger.info(f"待新增字段：{field_name} | SQL：{add_sql}")
-
+        
+        # 修改字段
+        for field_name in model_keys & db_keys:
+            field = model_fields[field_name]
+            db_field = db_meta[field_name]
+            need_modify = cls._check_field_need_modify(field, db_field, adapter)
+            if need_modify:
+                modify_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_modify_field_sql(field)};"
+                if modify_sql.strip():
+                    migrate_commands.append(modify_sql)
+                    logger.info(f"待修改字段：{field_name} | SQL：{modify_sql}")
+        
+        # 删除字段
         if drop_absent:
             for field_name in db_keys - model_keys:
                 if field_name == cls._meta.primary_key.name:
@@ -1168,8 +1078,8 @@ class Model(metaclass=ModelMeta):
                 drop_sql = f"ALTER TABLE {adapter.quote_identifier(table_name)} {adapter.get_alter_drop_field_sql(field_name)};"
                 migrate_commands.append(drop_sql)
                 logger.info(f"待删除字段：{field_name} | SQL：{drop_sql}")
-
-        # 执行迁移命令
+        
+        # 执行迁移
         if migrate_commands:
             with db.transaction():
                 for idx, cmd in enumerate(migrate_commands):
@@ -1177,14 +1087,14 @@ class Model(metaclass=ModelMeta):
                         logger.info(f"执行迁移语句[{idx+1}/{len(migrate_commands)}]：{cmd}")
                         db.execute(cmd, close_after=True)
                     except Exception as e:
-                        # 忽略“无默认值可删除”的错误（PostgreSQL 特有）
-                        if "cannot drop default" not in str(e):
-                            logger.error(f"迁移语句执行失败：{cmd} | 错误：{e}")
-                            raise
-                logger.info(f"模型{cls.__name__}迁移完成，成功执行{len(migrate_commands)}条语句")
+                        logger.error(f"迁移语句执行失败：{cmd} | 错误：{e}")
+                        raise
+            logger.info(f"模型{cls.__name__}迁移完成，成功执行{len(migrate_commands)}条语句")
         else:
             logger.info(f"模型{cls.__name__}无字段变更，无需迁移")
-        return migrate_commands    
+        
+        return migrate_commands
+
     @classmethod
     def _check_field_need_modify(cls, field: Field, db_field: Dict, adapter: BaseDatabaseAdapter) -> bool:
         """检查字段是否需要修改（修复：跳过主键字段）"""
@@ -1361,46 +1271,7 @@ class Model(metaclass=ModelMeta):
 
         # 执行更新（核心修复：支持事务内不关闭连接）
         return db.execute(sql, tuple(set_params + where_params), close_after=close_after)
-    @classmethod
-    def filter(cls,** kwargs):
-        """兼容 Django ORM 的 filter 方法，支持 __in/__isnull 等语法"""
-        query = cls.select()
-        where_conditions = []
-        where_params = []
-        
-        for key, value in kwargs.items():
-            # 处理 __in 条件
-            if '__in' in key:
-                field_name = key.replace('__in', '')
-                # 验证字段是否存在
-                if field_name not in cls._meta.fields:
-                    raise ModelError(f"字段 {field_name} 不存在")
-                # 拼接 IN 条件
-                placeholders = ', '.join(['?'] * len(value))
-                where_conditions.append(f"{field_name} IN ({placeholders})")
-                where_params.extend(value)
-            # 处理 __isnull 条件
-            elif '__isnull' in key:
-                field_name = key.replace('__isnull', '')
-                if field_name not in cls._meta.fields:
-                    raise ModelError(f"字段 {field_name} 不存在")
-                if value:
-                    where_conditions.append(f"{field_name} IS NULL")
-                else:
-                    where_conditions.append(f"{field_name} IS NOT NULL")
-            # 普通相等条件
-            else:
-                if key not in cls._meta.fields:
-                    raise ModelError(f"字段 {key} 不存在")
-                where_conditions.append(f"{key} = ?")
-                where_params.append(value)
-        
-        # 应用条件
-        if where_conditions:
-            query.where_conditions = where_conditions
-            query.where_params = where_params
-        
-        return query.execute()
+
 # ======================== 9. 工具函数 ========================
 def detect_sql_injection(value: str) -> bool:
     """检测 SQL 注入（增强匹配规则）"""

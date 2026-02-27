@@ -3,11 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#f5f7fa"> <!-- 默认亮色主题色 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>后台管理系统</title>
     <!-- 外部资源 -->
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/3.3.2/tailwind.min.css">
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
     <!-- 本地样式 -->
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/theme.css">
@@ -20,23 +21,24 @@
 <body>
     <div id="app" class="light">
         <!-- 登录页（默认显示） -->
-        <div id="login-page" class="flex align-center justify-center h-full">
+        <div id="login-page" class="min-h-screen flex items-center justify-center">
             <div class="login-container w-96 bg-white rounded-lg shadow-lg p-8">
                 <div class="login-title text-center text-2xl font-bold mb-8 text-primary">后台管理系统</div>
                 <form id="login-form" class="space-y-4">
                     <div class="form-item">
                         <label class="form-label">用户名</label>
-                        <input type="text" name="username" class="form-input" placeholder="请输入用户名" required>
+                        <input type="text" name="username" class="form-input w-full" placeholder="请输入用户名" required
+                            autocomplete="username">
                     </div>
                     <div class="form-item">
                         <label class="form-label">密码</label>
-                        <input type="password" name="password" class="form-input" placeholder="请输入密码" required>
+                        <input type="password" name="password" class="form-input w-full" placeholder="请输入密码" required
+                            autocomplete="current-password">
                     </div>
                     <button type="submit" class="btn btn-primary w-full">登 录</button>
                 </form>
             </div>
         </div>
-
         <!-- 管理系统布局（登录后显示） -->
         <div id="admin-layout" class="hidden h-full">
             <!-- 顶部导航 -->
@@ -51,8 +53,10 @@
                             class="notify-count absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex align-center justify-center hidden">0</span>
                     </div>
                     <div class="theme-switch mr-4"></div>
+
                     <div class="user-info flex align-center gap-4"></div>
                     <button id="logout-btn" class="btn btn-default">退出登录</button>
+                    <!-- <button id="theme-toggle">🌙 深色模式</button> -->
                 </div>
             </header>
 
@@ -91,35 +95,55 @@
             const password = this.password.value.trim();
 
             if (!username || !password) {
-                notify.warning('请输入用户名和密码');
+                // 兼容notify未定义的情况
+                if (window.notify) {
+                    notify.warning('请输入用户名和密码');
+                } else {
+                    alert('请输入用户名和密码');
+                }
                 return;
             }
 
             try {
-                loading.show();
+                // 兼容loading未定义的情况
+                if (window.loading) loading.show();
+
                 const res = await api.post('/api/user/login', { username, password });
-                // 确保res.data.token存在（后端返回的token字段），再存储
-                alert(res.data.token);
-                if (res && res.data.token) { // 按后端实际返回格式调整，比如res.data.token
-                    localStorage.setItem('token', res.data.token); // 存储纯Token字符串，无Bearer前缀
-                } else {
-                    alert('登录成功，但未获取到令牌，请刷新重试');
-                    return;
+
+                // 统一判断响应格式
+                if (!res) {
+                    throw new Error("接口返回空数据");
                 }
-                if (res.code === 200) {
-                    // 保存Token
-                    store.set('token', res.data.token);
-                    // 切换到管理布局
-                    document.getElementById('login-page').classList.add('hidden');
-                    document.getElementById('admin-layout').classList.remove('hidden');
-                    // 初始化系统
-                    initApp();
+                if (res.code !== 200) {
+                    throw new Error(res.msg || "登录失败");
+                }
+                if (!res.data || !res.data.token) {
+                    throw new Error("未获取到登录令牌");
+                }
+
+                // 存储Token（只存一次）
+                localStorage.setItem('token', res.data.token);
+                store.set('token', res.data.token);
+
+                // 切换布局并初始化
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('admin-layout').classList.remove('hidden');
+                window.initApp(); // 调用全局的initApp
+
+                if (window.notify) {
                     notify.success('登录成功');
+                } else {
+                    alert('登录成功');
                 }
             } catch (err) {
                 console.error('登录失败', err);
+                if (window.notify) {
+                    notify.error(err.message);
+                } else {
+                    alert('登录失败：' + err.message);
+                }
             } finally {
-                loading.hide();
+                if (window.loading) loading.hide();
             }
         });
     </script>

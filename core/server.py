@@ -17,7 +17,7 @@ from core.middleware import (
 
 # 注册全局中间件（执行顺序：从上到下，完全不变）
 GLOBAL_MIDDLEWARES = [
-    rate_limit_middleware,    # 接口限流
+    # rate_limit_middleware,    # 接口限流
     csrf_middleware,          # CSRF防护
     auth_middleware,          # 权限认证
     throttle_middleware,      # 请求节流
@@ -161,6 +161,7 @@ class Response:
         """编码Cookie值（处理特殊字符，如空格、逗号、分号）"""
         import urllib.parse
         return urllib.parse.quote(str(value), safe="")
+    
     def json(self, data, status=200):
         """构造JSON响应"""
         self.status = status
@@ -209,6 +210,7 @@ class Response:
         response_body = self.body
         # 拼接所有部分
         return (response_line + response_headers + "\r\n").encode("utf-8") + response_body
+
 def set_cors_headers(response):
     """设置跨域响应头，允许前端携带Cookie"""
     response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:8080"  # 前端域名
@@ -216,13 +218,7 @@ def set_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-CSRF-Token"  # 允许CSRF Token请求头
     response.headers["Access-Control-Allow-Credentials"] = "true"  # 关键：允许携带Cookie
     return response
-def set_cors_headers(response):
-    """设置跨域响应头，允许前端携带Cookie"""
-    response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:8080"  # 前端域名
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-CSRF-Token"  # 允许CSRF Token请求头
-    response.headers["Access-Control-Allow-Credentials"] = "true"  # 关键：允许携带Cookie
-    return response
+
 def handle_request(raw_data, client_addr):
     """处理单个HTTP请求"""
     try:
@@ -273,14 +269,22 @@ def handle_request(raw_data, client_addr):
         valid_params = {k: v for k, v in all_params.items() if k in handler_params}
         result = handler(request, **valid_params)
 
-        # 5. 构造响应
+        # 5. 构造响应（核心修改：移除双层嵌套）
+        # ========== 关键修改开始 ==========
         if isinstance(result, dict):
-            response.json({"code": 200, "msg": "success", "data": result})
+            # 如果处理器返回 {code:xxx, msg:xxx, data:xxx}，直接使用（不嵌套）
+            if "code" in result and "msg" in result:
+                response.json(result)
+            # 如果处理器返回纯数据（如 {user_count:1}），包装一层标准格式
+            else:
+                response.json({"code": 200, "msg": "success", "data": result})
         elif isinstance(result, tuple) and len(result) == 2:
             code, data = result
             response.json({"code": code, "msg": "success" if code == 200 else "failed", "data": data})
         else:
+            # 其他类型直接包装一层
             response.json({"code": 200, "msg": "success", "data": result})
+        # ========== 关键修改结束 ==========
 
         return response.build()
 
